@@ -64,8 +64,6 @@ button,input,[onclick]{touch-action:manipulation}
 .lbtn.spinning i{animation:spin .7s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 
-
-
 /* ── TABS ── */
 .tabs{display:flex;margin-bottom:12px;border:1px solid var(--bd2);border-radius:var(--r);
   overflow:hidden;background:var(--bg2)}
@@ -284,7 +282,6 @@ button,input,[onclick]{touch-action:manipulation}
 .br-mc-time{font-size:10px;color:var(--tx3)}
 .br-mc-venue{font-size:10px;color:var(--tx3);text-align:right;line-height:1.3}
 .br-mc-city{font-size:10px;color:var(--tx3);text-align:right}
-
 
 </style>
 </head>
@@ -685,10 +682,8 @@ function syncAllViews() {
     renderToday();
   }
   renderGroups();
-  // If team search modal is open, refresh it
-  if (currentTeam && document.getElementById('tsm').classList.contains('show')) {
-    showTeamInModal(currentTeam);
-  }
+  // Re-render bracket (scores don't affect it yet but keeps pattern consistent)
+  renderBracket();
 }
 
 function scheduleNext() {
@@ -819,24 +814,20 @@ function buildTeamHTML(team, backFn) {
   return html;
 }
 
-// Called from any match card team tap
+// Called from any match card team tap — works from any tab
 function showTeamOverlay(team, e) {
   if (e) e.stopPropagation();
 
-  if (currentView === 'today') {
-    // Render inline in Today tab
+  if (currentView === 'groups') {
+    selGroupTeam(team, teamGroup(team));
+  } else {
+    // Today tab, Bracket tab, Watch tab — all render inline in Today area
+    // by switching to Today first, then showing the team
+    if (currentView !== 'today') go('today');
     _todayTeam = team;
     document.getElementById('v-today').innerHTML =
       buildTeamHTML(team, 'closeTodayTeam()');
     window.scrollTo({top: 0, behavior: 'smooth'});
-
-  } else if (currentView === 'groups') {
-    // Render inline in Groups tab via selGroupTeam
-    selGroupTeam(team, teamGroup(team));
-
-  } else if (currentView === 'search') {
-    // Render in Teams tab
-    pickTeam(team);
   }
 }
 
@@ -870,17 +861,21 @@ function renderToday() {
   document.getElementById('hero-date').textContent =
     d.toLocaleDateString('en-US', {weekday:'long', month:'long', day:'numeric', year:'numeric'});
 
-  // Today's full slate = today's matches + any 12:00 AM matches dated tomorrow
-  // (midnight ET games belong to the previous evening's schedule but land on the next date)
+  // Today's full slate:
+  // - Core: all matches dated today in ET
+  // - After 10 PM: also include 12:00 AM matches dated tomorrow (late-night games)
+  // - Before 2 AM: also include 12:00 AM matches dated yesterday (just finished)
   const tomorrowET = (() => {
-    const d = nowET(); d.setDate(d.getDate() + 1);
-    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+    const tmp = nowET(); tmp.setDate(tmp.getDate() + 1);
+    return `${tmp.getFullYear()}-${String(tmp.getMonth()+1).padStart(2,'0')}-${String(tmp.getDate()).padStart(2,'0')}`;
   })();
-  const midnightNext = MATCHES.filter(m => m.date === tomorrowET && m.kick.startsWith('12:00 AM'));
-  const lateYesterday = hourET < 2
+  const lateNight   = hourET >= 22
+    ? MATCHES.filter(m => m.date === tomorrowET && m.kick.startsWith('12:00 AM'))
+    : [];
+  const earlyMorning = hourET < 2
     ? MATCHES.filter(m => m.date === yesterday && m.kick.startsWith('12:00 AM'))
     : [];
-  const todayMs = [...lateYesterday, ...MATCHES.filter(m => m.date === today), ...midnightNext];
+  const todayMs = [...earlyMorning, ...MATCHES.filter(m => m.date === today), ...lateNight];
 
   if (!todayMs.length) {
     // Find next match day
@@ -952,23 +947,6 @@ function pickTeamFromSearch(team) {
 }
 
 function pickTeam(t) { pickTeamFromSearch(t); }
-
-function showTeam(team, scroll) {
-  currentTeam = team;
-  const ms = MATCHES.filter(m => m.h === team || m.a === team);
-  const g  = teamGroup(team);
-  const html = `
-    <div class="back" onclick="clearSearch()"><i class="ti ti-arrow-left"></i> All teams</div>
-    <div class="team-hdr">
-      <span class="team-hdr-fl">${FLAGS[team]||'🏳️'}</span>
-      <div><h2>${team}</h2><p>Group ${g} · ${ms.length} group stage matches</p></div>
-    </div>
-    ${ms.map(m => matchCard(m, false)).join('')}`;
-  document.getElementById('sres').innerHTML = html;
-  if (scroll) window.scrollTo({top:0, behavior:'smooth'});
-}
-
-
 
 // ═══════════════════════════════════════════════════════
 // BRACKET VIEW — pill tabs per round
@@ -1098,7 +1076,6 @@ function setBracketRound(id) {
 }
 
 // ═══════════════════════════════════════════════════════
-// GROUPS VIEW// ═══════════════════════════════════════════════════════
 // GROUPS VIEW
 // ═══════════════════════════════════════════════════════
 let selGroup = null;
@@ -1281,7 +1258,7 @@ function renderGroupBody(g) {
   document.getElementById('grp-body').innerHTML = html;
 }
 
-function goTeam(t) { go('search'); pickTeam(t); }
+function goTeam(t) { showTeamOverlay(t, null); }
 
 // ═══════════════════════════════════════════════════════
 // WATCH GUIDE
