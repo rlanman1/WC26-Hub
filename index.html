@@ -226,29 +226,28 @@ button,input,[onclick]{touch-action:manipulation}
 .hero-search-pill i{font-size:13px;color:rgba(255,255,255,.7)}
 .hero-search-pill span{font-size:11px;color:rgba(255,255,255,.7);white-space:nowrap}
 
-/* ── TEAM SEARCH MODAL ── */
-.tsm{position:fixed;inset:0;z-index:400;display:none;align-items:flex-start;
-  justify-content:center;padding-top:60px;
-  background:rgba(0,0,0,.45);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
-.tsm.show{display:flex}
-.tsm-box{background:var(--bg);border-radius:var(--rl);width:calc(100% - 32px);
-  max-width:480px;overflow:hidden;box-shadow:0 16px 48px rgba(0,0,0,.25)}
-.tsm-hdr{display:flex;align-items:center;gap:8px;padding:12px 14px;
+/* ── TEAM SEARCH DROPDOWN ── */
+.tsd{position:fixed;top:0;left:0;right:0;z-index:400;display:none;
+  padding:12px 12px 0;max-width:680px;margin:0 auto}
+.tsd.show{display:block}
+.tsd-box{background:var(--bg);border-radius:var(--rl);
+  box-shadow:0 8px 32px rgba(0,0,0,.18);overflow:hidden}
+.tsd-hdr{display:flex;align-items:center;gap:8px;padding:11px 12px;
   border-bottom:1px solid var(--bd)}
-.tsm-input{flex:1;font-size:16px;border:none;outline:none;background:transparent;
+.tsd-input{flex:1;font-size:16px;border:none;outline:none;background:transparent;
   color:var(--tx);font-family:var(--font)}
-.tsm-input::placeholder{color:var(--tx3)}
-.tsm-close{background:none;border:none;color:var(--tx3);font-size:20px;cursor:pointer;
-  padding:0;line-height:1;flex-shrink:0}
-.tsm-results{max-height:60vh;overflow-y:auto;-webkit-overflow-scrolling:touch}
-.tsm-empty{padding:28px 16px;text-align:center;color:var(--tx3);font-size:13px}
-.tsm-item{padding:11px 14px;border-bottom:1px solid var(--bd);cursor:pointer;
+.tsd-input::placeholder{color:var(--tx3)}
+.tsd-close{background:none;border:none;color:var(--tx3);cursor:pointer;
+  padding:4px;line-height:1;flex-shrink:0;display:flex;align-items:center}
+.tsd-close i{font-size:16px}
+.tsd-list{max-height:50vh;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.tsd-item{padding:11px 14px;border-bottom:1px solid var(--bd);cursor:pointer;
   display:flex;align-items:center;gap:10px;transition:background .1s}
-.tsm-item:last-child{border-bottom:none}
-.tsm-item:hover,.tsm-item:active{background:var(--bg2)}
-.tsm-flag{font-size:22px;flex-shrink:0}
-.tsm-name{font-size:14px;font-weight:500;color:var(--tx)}
-.tsm-sub{font-size:11px;color:var(--tx2);margin-top:2px}
+.tsd-item:last-child{border-bottom:none}
+.tsd-item:hover,.tsd-item:active{background:var(--bg2)}
+.tsd-flag{font-size:20px;flex-shrink:0}
+.tsd-name{font-size:13px;font-weight:500;color:var(--tx)}
+.tsd-sub{font-size:11px;color:var(--tx2);margin-top:1px}
 
 /* ── BRACKET VIEW ── */
 .bracket-stage{margin-bottom:20px}
@@ -313,19 +312,17 @@ button,input,[onclick]{touch-action:manipulation}
   <div id="v-watch"   class="view"></div>
 </div>
 
-<!-- TEAM SEARCH MODAL -->
-<div class="tsm" id="tsm" onclick="tsClickOutside(event)">
-  <div class="tsm-box" id="tsm-box">
-    <div class="tsm-hdr">
-      <i class="ti ti-search" style="color:var(--tx3);font-size:16px;flex-shrink:0"></i>
-      <input type="text" class="tsm-input" id="tsm-input"
-             placeholder="Search any country…"
+<!-- TEAM SEARCH DROPDOWN -->
+<div class="tsd" id="tsd">
+  <div class="tsd-box">
+    <div class="tsd-hdr">
+      <i class="ti ti-search" style="color:var(--tx3);font-size:14px;flex-shrink:0"></i>
+      <input type="text" class="tsd-input" id="tsd-input"
+             placeholder="Search a country…"
              oninput="onTeamSearch(this.value)" autocomplete="off"/>
-      <button type="button" class="tsm-close" onclick="closeTeamSearch()">✕</button>
+      <button type="button" class="tsd-close" onclick="closeTeamSearch()"><i class="ti ti-x"></i></button>
     </div>
-    <div class="tsm-results" id="tsm-results">
-      <div class="tsm-empty">Type a country name to see their schedule and group standings</div>
-    </div>
+    <div class="tsd-list" id="tsd-list"></div>
   </div>
 </div>
 
@@ -889,108 +886,57 @@ function renderToday() {
 }
 
 // ═══════════════════════════════════════════════════════
-// TEAM SEARCH MODAL
+// TEAM SEARCH DROPDOWN (from hero pill)
+// Selecting a team → goes to Groups tab, shows that team
 // ═══════════════════════════════════════════════════════
 let currentTeam = null;
 
 function openTeamSearch() {
-  document.getElementById('tsm').classList.add('show');
-  setTimeout(() => document.getElementById('tsm-input').focus(), 80);
-  onTeamSearch('');
+  const el = document.getElementById('tsd');
+  el.classList.add('show');
+  document.getElementById('tsd-list').innerHTML = '';
+  document.getElementById('tsd-input').value = '';
+  setTimeout(() => document.getElementById('tsd-input').focus(), 60);
 }
 
 function closeTeamSearch() {
-  document.getElementById('tsm').classList.remove('show');
-  document.getElementById('tsm-input').value = '';
-  document.getElementById('tsm-results').innerHTML =
-    '<div class="tsm-empty">Type a country name to see their schedule and group standings</div>';
-  currentTeam = null;
-}
-
-function tsClickOutside(e) {
-  if (e.target === document.getElementById('tsm')) closeTeamSearch();
+  document.getElementById('tsd').classList.remove('show');
+  document.getElementById('tsd-input').value = '';
+  document.getElementById('tsd-list').innerHTML = '';
 }
 
 function onTeamSearch(v) {
-  const q   = v.trim().toLowerCase();
-  const res = document.getElementById('tsm-results');
+  const q    = v.trim().toLowerCase();
+  const list = document.getElementById('tsd-list');
 
-  if (!q) {
-    res.innerHTML = '<div class="tsm-empty">Type a country name to see their schedule and group standings</div>';
-    return;
-  }
+  if (!q) { list.innerHTML = ''; return; }
 
   const hits = Object.keys(FLAGS).filter(t => t.toLowerCase().includes(q));
   if (!hits.length) {
-    res.innerHTML = '<div class="tsm-empty">No team found — try "USA", "France" or "Brazil"</div>';
+    list.innerHTML = '<div style="padding:14px;font-size:12px;color:var(--tx3);text-align:center">No team found</div>';
     return;
   }
 
-  const exact = hits.find(t => t.toLowerCase() === q);
-  if (exact || hits.length === 1) {
-    showTeamInModal(exact || hits[0]);
-    return;
-  }
-
-  res.innerHTML = hits.slice(0, 10).map(t =>
-    `<div class="tsm-item" onclick="showTeamInModal('${t.replace(/'/g,"\'")}')">
-      <span class="tsm-flag">${FLAGS[t]||'🏳️'}</span>
-      <div><div class="tsm-name">${t}</div>
-           <div class="tsm-sub">Group ${teamGroup(t)}</div></div>
-    </div>`).join('');
+  list.innerHTML = hits.slice(0, 12).map(t =>
+    `<div class="tsd-item" onclick="pickTeamFromSearch('${t.replace(/'/g,"\'")}')">
+      <span class="tsd-flag">${FLAGS[t]||'🏳️'}</span>
+      <div>
+        <div class="tsd-name">${t}</div>
+        <div class="tsd-sub">Group ${teamGroup(t)}</div>
+      </div>
+    </div>`
+  ).join('');
 }
 
-function showTeamInModal(team) {
-  currentTeam = team;
-  const g  = teamGroup(team);
-  const ms = MATCHES.filter(m => m.h === team || m.a === team);
-  const {sorted, stats} = calcStandings(g);
-
-  let html = `<div style="padding:12px 14px 0">
-    <button type="button" class="back" onclick="backToTeamSearch()" style="margin-bottom:10px">
-      <i class="ti ti-arrow-left"></i> Back
-    </button>
-    <div class="team-hdr" style="margin-bottom:12px">
-      <span class="team-hdr-fl">${FLAGS[team]||'🏳️'}</span>
-      <div><h2>${team}</h2><p>Group ${g} · ${ms.length} group stage matches</p></div>
-    </div>
-    <div class="sec-lbl" style="margin-bottom:8px">Group ${g} Standings</div>
-    <div class="stbl-wrap" style="margin-bottom:14px">
-      <table class="stbl"><thead><tr>
-        <th></th><th>Team</th><th>P</th><th>W</th><th>D</th><th>L</th><th>GD</th><th>Pts</th>
-      </tr></thead><tbody>`;
-
-  sorted.forEach((t, i) => {
-    const s = stats[t];
-    const gd = s.gd > 0 ? '+'+s.gd : ''+s.gd;
-    const sel = t === team;
-    html += `<tr class="${i<2?'adv':i===2?'maybe':''}" style="${sel?'background:var(--bg2)':''}">
-      <td class="stbl-pos">${i+1}</td>
-      <td><span class="stbl-flag">${FLAGS[t]||'🏳️'}</span>
-          <span class="stbl-name" style="${sel?'font-weight:700':''}"
-                onclick="showTeamInModal('${t.replace(/'/g,"\'")}'">${t}</span></td>
-      <td>${s.p}</td><td>${s.w}</td><td>${s.d}</td><td>${s.l}</td>
-      <td>${s.p>0?gd:'—'}</td>
-      <td style="font-weight:${s.pts>0?'700':'400'};color:${s.pts>=3?'#16a34a':'var(--tx)'}">${s.pts}</td>
-    </tr>`;
-  });
-
-  html += `</tbody></table>
-      <div class="stbl-key"><span class="adv">Advances</span><span class="maybe">Possible (best 3rd)</span></div>
-    </div>
-    <div class="sec-lbl" style="margin-bottom:8px">${team} — All Matches</div>
-  </div>
-  <div style="padding:0 14px 16px">${ms.map(m => matchCard(m,false)).join('')}</div>`;
-
-  document.getElementById('tsm-results').innerHTML = html;
+function pickTeamFromSearch(team) {
+  closeTeamSearch();
+  // Navigate to Groups tab and show that team's view
+  selGroup = teamGroup(team);
+  selTeam  = team;
+  go('groups');
 }
 
-function backToTeamSearch() {
-  const v = document.getElementById('tsm-input').value;
-  onTeamSearch(v);
-}
-
-function pickTeam(t) { showTeamInModal(t); }
+function pickTeam(t) { pickTeamFromSearch(t); }
 
 function showTeam(team, scroll) {
   currentTeam = team;
