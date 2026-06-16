@@ -27,9 +27,11 @@
   --tx:#f2f2f7;--tx2:#aeaeb2;--tx3:#636366;
   --bd:rgba(255,255,255,0.09);--bd2:rgba(255,255,255,0.18);
 }}
-*{box-sizing:border-box;margin:0;padding:0}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 body{font-family:var(--font);background:var(--bg2);min-height:100vh;color:var(--tx);
-  padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom)}
+  padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom);
+  -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+button,input,[onclick]{touch-action:manipulation}
 
 /* ── APP SHELL ── */
 .app{max-width:680px;margin:0 auto;padding:12px 12px 88px}
@@ -44,16 +46,16 @@ body{font-family:var(--font);background:var(--bg2);min-height:100vh;color:var(--
 .hero-date{font-size:12px;color:rgba(255,255,255,.7);margin-top:8px;font-weight:500}
 .hero-pill{display:inline-flex;align-items:center;gap:5px;background:rgba(52,211,153,.13);
   color:#6ee7b7;font-size:10px;font-weight:500;padding:3px 9px;border-radius:20px;
-  border:0.5px solid rgba(52,211,153,.3);margin-top:6px}
+  border:1px solid rgba(52,211,153,.25);margin-top:6px}
 
 /* ── LIVE BAR ── */
-.lbar{display:flex;align-items:center;gap:7px;margin-top:10px;padding-top:9px;border-top:0.5px solid rgba(255,255,255,.1)}
+.lbar{display:flex;align-items:center;gap:7px;margin-top:10px;padding-top:9px;border-top:1px solid rgba(255,255,255,.08)}
 .ldot{width:7px;height:7px;border-radius:50%;background:#6ee7b7;flex-shrink:0}
 .ldot.live{background:#ef4444;animation:blink 1.4s infinite}
 .ldot.err{background:#f59e0b}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
 .lstat{font-size:11px;color:rgba(255,255,255,.6);flex:1;line-height:1.4}
-.lbtn{background:rgba(255,255,255,.1);border:0.5px solid rgba(255,255,255,.15);
+.lbtn{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.12);
   color:rgba(255,255,255,.8);font-size:10px;padding:4px 10px;border-radius:20px;
   cursor:pointer;display:flex;align-items:center;gap:4px;font-family:var(--font);white-space:nowrap}
 .lbtn:hover{background:rgba(255,255,255,.18)}
@@ -65,7 +67,7 @@ body{font-family:var(--font);background:var(--bg2);min-height:100vh;color:var(--
 
 
 /* ── TABS ── */
-.tabs{display:flex;margin-bottom:12px;border:0.5px solid var(--bd2);border-radius:var(--r);
+.tabs{display:flex;margin-bottom:12px;border:1px solid var(--bd2);border-radius:var(--r);
   overflow:hidden;background:var(--bg2)}
 .tab{flex:1;padding:9px 4px 7px;font-size:12px;font-weight:500;cursor:pointer;
   color:var(--tx3);text-align:center;border:none;border-bottom:2px solid transparent;
@@ -82,7 +84,7 @@ body{font-family:var(--font);background:var(--bg2);min-height:100vh;color:var(--
   letter-spacing:.7px;margin:0 0 8px}
 
 /* ── MATCH CARD ── */
-.mc{background:var(--bg);border:0.5px solid var(--bd);border-radius:var(--rl);
+.mc{background:var(--bg);border:1px solid var(--bd);border-radius:var(--rl);
   padding:12px 14px 10px;margin-bottom:9px;transition:border-color .2s}
 .mc.usmnt{border-color:#2d7a4f;border-width:1px}
 .mc.is-live{border-color:#dc2626;border-width:1px}
@@ -100,7 +102,7 @@ body{font-family:var(--font);background:var(--bg2);min-height:100vh;color:var(--
 /* teams */
 .mc-body{display:flex;align-items:center;gap:4px}
 .mc-team{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;
-  cursor:pointer;padding:6px 4px;border-radius:var(--r);transition:background .12s}
+  cursor:pointer;padding:8px 4px;border-radius:var(--r);transition:background .12s;min-height:44px;justify-content:center}
 .mc-team:hover{background:var(--bg2)}
 .mc-flag{font-size:26px;line-height:1}
 .mc-name{font-size:11px;font-weight:500;color:var(--tx);text-align:center;line-height:1.3}
@@ -114,15 +116,15 @@ body{font-family:var(--font);background:var(--bg2);min-height:100vh;color:var(--
 .mc-min{font-size:10px;color:#dc2626;font-weight:600;margin-top:2px}
 
 /* footer */
-.mc-foot{margin-top:10px;padding-top:8px;border-top:0.5px solid var(--bd);
+.mc-foot{margin-top:10px;padding-top:8px;border-top:1px solid var(--bd);
   display:flex;flex-direction:column;gap:5px}
 .mc-venue{font-size:11px;color:var(--tx2);display:flex;align-items:center;gap:4px}
 .mc-venue i{font-size:13px;color:var(--tx3);flex-shrink:0}
 .mc-watch{display:flex;align-items:center;gap:5px;flex-wrap:wrap}
 .wl{font-size:10px;color:var(--tx3)}
 .chip{font-size:10px;font-weight:400;padding:2px 7px;border-radius:4px;
-  background:var(--bg2);color:var(--tx3);border:0.5px solid var(--bd)}
-.ce,.cs,.cst{background:var(--bg2);color:var(--tx3);border:0.5px solid var(--bd)}
+  background:var(--bg2);color:var(--tx3);border:1px solid var(--bd)}
+.ce,.cs,.cst{background:var(--bg2);color:var(--tx3);border:1px solid var(--bd)}
 
 /* ── EMPTY ── */
 .empty{text-align:center;padding:40px 16px;color:var(--tx2);font-size:13px}
@@ -131,7 +133,7 @@ body{font-family:var(--font);background:var(--bg2);min-height:100vh;color:var(--
 /* ── SEARCH ── */
 .s-wrap{margin-bottom:10px}
 .s-row{display:flex;gap:8px;align-items:center}
-.s-row input{flex:1;padding:10px 12px;font-size:13px;border:0.5px solid var(--bd2);
+.s-row input{flex:1;padding:10px 12px;font-size:16px;border:1px solid var(--bd2);
   border-radius:var(--r);background:var(--bg2);color:var(--tx);outline:none;
   font-family:var(--font);transition:border-color .15s}
 .s-row input:focus{border-color:#2d7a4f}
@@ -139,9 +141,9 @@ body{font-family:var(--font);background:var(--bg2);min-height:100vh;color:var(--
   border-radius:var(--r);font-size:13px;cursor:pointer;display:flex;align-items:center;
   gap:4px;font-family:var(--font)}
 
-.sdrop{background:var(--bg);border:0.5px solid var(--bd2);border-radius:var(--rl);
+.sdrop{background:var(--bg);border:1px solid var(--bd2);border-radius:var(--rl);
   margin-bottom:10px;overflow:hidden;box-shadow:0 4px 12px rgba(0,0,0,.08)}
-.sdi{padding:11px 14px;border-bottom:0.5px solid var(--bd);cursor:pointer;
+.sdi{padding:11px 14px;border-bottom:1px solid var(--bd);cursor:pointer;
   display:flex;align-items:center;gap:10px;transition:background .1s}
 .sdi:last-child{border-bottom:none}
 .sdi:hover{background:var(--bg2)}
@@ -150,20 +152,20 @@ body{font-family:var(--font);background:var(--bg2);min-height:100vh;color:var(--
 .sdi-sub{font-size:11px;color:var(--tx2);margin-top:1px}
 
 .team-hdr{display:flex;align-items:center;gap:10px;margin-bottom:14px;padding:10px 14px;
-  background:var(--bg2);border-radius:var(--rl);border:0.5px solid var(--bd)}
+  background:var(--bg2);border-radius:var(--rl);border:1px solid var(--bd)}
 .team-hdr-fl{font-size:34px}
 .team-hdr h2{font-size:15px;font-weight:600;color:var(--tx)}
 .team-hdr p{font-size:12px;color:var(--tx2);margin-top:2px}
 
 /* ── BACK BTN ── */
 .back{display:inline-flex;align-items:center;gap:4px;font-size:12px;color:var(--tx2);
-  cursor:pointer;padding:5px 9px;border:0.5px solid var(--bd2);border-radius:var(--r);
+  cursor:pointer;padding:5px 9px;border:1px solid var(--bd2);border-radius:var(--r);
   background:var(--bg);margin-bottom:12px;font-family:var(--font)}
 .back:hover{background:var(--bg2)}
 
 /* ── GROUPS ── */
 .g-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:9px;margin-bottom:4px}
-.gcard{background:var(--bg);border:0.5px solid var(--bd);border-radius:var(--rl);
+.gcard{background:var(--bg);border:1px solid var(--bd);border-radius:var(--rl);
   padding:10px 12px;cursor:pointer;transition:border-color .15s,box-shadow .15s}
 .gcard:hover{border-color:#2d7a4f;box-shadow:0 2px 8px rgba(0,0,0,.06)}
 .gcard-lbl{font-size:10px;font-weight:600;color:var(--tx3);text-transform:uppercase;
@@ -177,18 +179,18 @@ body{font-family:var(--font);background:var(--bg2);min-height:100vh;color:var(--
   padding-bottom:2px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
 .gtabs::-webkit-scrollbar{display:none}
 .gtab{padding:6px 13px;font-size:12px;font-weight:600;cursor:pointer;color:var(--tx2);
-  background:var(--bg);border:0.5px solid var(--bd);border-radius:20px;
+  background:var(--bg);border:1px solid var(--bd);border-radius:20px;
   font-family:var(--font);transition:all .14s;flex-shrink:0;white-space:nowrap}
 .gtab:hover{border-color:#2d7a4f;color:var(--tx)}
 .gtab.on{background:#0a2416;color:#fff;border-color:#0a2416}
 
 /* ── STANDINGS ── */
-.stbl-wrap{background:var(--bg);border:0.5px solid var(--bd);border-radius:var(--rl);
+.stbl-wrap{background:var(--bg);border:1px solid var(--bd);border-radius:var(--rl);
   padding:10px 12px;margin-bottom:14px;overflow-x:auto}
 .stbl{width:100%;border-collapse:collapse;font-size:12px;min-width:280px}
 .stbl th{text-align:left;padding:4px 8px;color:var(--tx3);font-weight:600;
-  border-bottom:0.5px solid var(--bd2);font-size:10px;text-transform:uppercase;letter-spacing:.4px}
-.stbl td{padding:7px 8px;border-bottom:0.5px solid var(--bd);color:var(--tx);vertical-align:middle}
+  border-bottom:1px solid var(--bd2);font-size:10px;text-transform:uppercase;letter-spacing:.4px}
+.stbl td{padding:7px 8px;border-bottom:1px solid var(--bd);color:var(--tx);vertical-align:middle}
 .stbl tr:last-child td{border-bottom:none}
 .stbl tr.adv td:first-child{border-left:2px solid #16a34a;padding-left:6px}
 .stbl tr.maybe td:first-child{border-left:2px solid #ca8a04;padding-left:6px}
@@ -202,29 +204,78 @@ body{font-family:var(--font);background:var(--bg2);min-height:100vh;color:var(--
 .stbl-key span.maybe{border-left:2px solid #ca8a04;padding-left:5px}
 
 /* ── WATCH GUIDE ── */
-.wg{background:var(--bg);border:0.5px solid var(--bd);border-radius:var(--rl);
+.wg{background:var(--bg);border:1px solid var(--bd);border-radius:var(--rl);
   padding:12px 14px;margin-bottom:12px}
 .wg-title{font-size:13px;font-weight:600;color:var(--tx);margin-bottom:10px;
   display:flex;align-items:center;gap:6px}
 .wg-title i{font-size:15px;color:var(--tx3)}
 .wr{display:flex;justify-content:space-between;align-items:flex-start;
-  padding:8px 0;border-bottom:0.5px solid var(--bd)}
+  padding:8px 0;border-bottom:1px solid var(--bd)}
 .wr:last-child{border-bottom:none}
 .wr-name{font-size:13px;font-weight:500;color:var(--tx)}
 .wr-desc{font-size:11px;color:var(--tx2);margin-top:2px;line-height:1.4}
 .wtag{font-size:11px;padding:2px 9px;border-radius:4px;font-weight:500;
   white-space:nowrap;margin-left:10px;flex-shrink:0;align-self:flex-start;margin-top:2px}
 
-/* ── STICKY SEARCH BAR ── */
-.sticky-s{position:fixed;bottom:0;left:0;right:0;background:var(--bg);
-  border-top:0.5px solid var(--bd2);padding:8px 12px 14px;z-index:200;display:none}
-.sticky-s .s-row{max-width:680px;margin:0 auto}
+/* ── HERO SEARCH PILL ── */
+.hero-row{display:flex;align-items:center;justify-content:space-between;margin-top:6px}
+.hero-search-pill{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.1);
+  border:1px solid rgba(255,255,255,.18);border-radius:20px;padding:4px 10px 4px 8px;
+  cursor:pointer;transition:background .15s;flex-shrink:0}
+.hero-search-pill:hover{background:rgba(255,255,255,.18)}
+.hero-search-pill i{font-size:13px;color:rgba(255,255,255,.7)}
+.hero-search-pill span{font-size:11px;color:rgba(255,255,255,.7);white-space:nowrap}
+
+/* ── TEAM SEARCH MODAL ── */
+.tsm{position:fixed;inset:0;z-index:400;display:none;align-items:flex-start;
+  justify-content:center;padding-top:60px;
+  background:rgba(0,0,0,.45);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
+.tsm.show{display:flex}
+.tsm-box{background:var(--bg);border-radius:var(--rl);width:calc(100% - 32px);
+  max-width:480px;overflow:hidden;box-shadow:0 16px 48px rgba(0,0,0,.25)}
+.tsm-hdr{display:flex;align-items:center;gap:8px;padding:12px 14px;
+  border-bottom:1px solid var(--bd)}
+.tsm-input{flex:1;font-size:16px;border:none;outline:none;background:transparent;
+  color:var(--tx);font-family:var(--font)}
+.tsm-input::placeholder{color:var(--tx3)}
+.tsm-close{background:none;border:none;color:var(--tx3);font-size:20px;cursor:pointer;
+  padding:0;line-height:1;flex-shrink:0}
+.tsm-results{max-height:60vh;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.tsm-empty{padding:28px 16px;text-align:center;color:var(--tx3);font-size:13px}
+.tsm-item{padding:11px 14px;border-bottom:1px solid var(--bd);cursor:pointer;
+  display:flex;align-items:center;gap:10px;transition:background .1s}
+.tsm-item:last-child{border-bottom:none}
+.tsm-item:hover,.tsm-item:active{background:var(--bg2)}
+.tsm-flag{font-size:22px;flex-shrink:0}
+.tsm-name{font-size:14px;font-weight:500;color:var(--tx)}
+.tsm-sub{font-size:11px;color:var(--tx2);margin-top:2px}
+
+/* ── BRACKET VIEW ── */
+.bracket-stage{margin-bottom:20px}
+.bracket-stage-lbl{font-size:10px;font-weight:600;color:var(--tx3);text-transform:uppercase;
+  letter-spacing:.8px;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.bracket-stage-lbl::after{content:'';flex:1;height:1px;background:var(--bd)}
+.bracket-matches{display:flex;flex-direction:column;gap:7px}
+.bmc{background:var(--bg);border:1px solid var(--bd);border-radius:var(--rl);
+  padding:10px 14px;display:flex;align-items:center;gap:10px}
+.bmc.final{border-color:#2d7a4f;border-width:1.5px}
+.bmc-teams{flex:1;display:flex;flex-direction:column;gap:5px}
+.bmc-team{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--tx2)}
+.bmc-team.winner{color:var(--tx);font-weight:600}
+.bmc-flag{font-size:16px;width:20px;text-align:center}
+.bmc-name{flex:1}
+.bmc-score{font-size:13px;font-weight:600;color:var(--tx);min-width:18px;text-align:right}
+.bmc-right{display:flex;flex-direction:column;align-items:flex-end;gap:3px;flex-shrink:0}
+.bmc-date{font-size:10px;color:var(--tx3);white-space:nowrap}
+.bmc-time{font-size:10px;color:var(--tx3);white-space:nowrap}
+.bmc-venue{font-size:10px;color:var(--tx3);white-space:nowrap}
+.bmc-tbd{font-size:11px;color:var(--tx3);font-style:italic}
+
+
 </style>
 </head>
 <body>
 <div class="app">
-
-
 
   <!-- HERO -->
   <div class="hero">
@@ -232,11 +283,17 @@ body{font-family:var(--font);background:var(--bg2);min-height:100vh;color:var(--
     <h1>FIFA World Cup 2026™</h1>
     <div class="hero-sub">48 teams · 104 matches · June 11 – July 19</div>
     <div class="hero-date" id="hero-date"></div>
-    <div class="hero-pill">⚽ Group Stage</div>
+    <div class="hero-row">
+      <div class="hero-pill">⚽ Group Stage</div>
+      <button type="button" class="hero-search-pill" onclick="openTeamSearch()">
+        <i class="ti ti-search"></i>
+        <span>Find a Team</span>
+      </button>
+    </div>
     <div class="lbar">
       <span class="ldot" id="ldot"></span>
       <span class="lstat" id="lstat">Connecting…</span>
-      <button class="lbtn" id="lbtn" onclick="fetchScores(true)">
+      <button type="button" class="lbtn" id="lbtn" onclick="fetchScores(true)">
         <i class="ti ti-refresh" id="lico"></i> Refresh
       </button>
     </div>
@@ -244,34 +301,31 @@ body{font-family:var(--font);background:var(--bg2);min-height:100vh;color:var(--
 
   <!-- TABS -->
   <div class="tabs">
-    <button class="tab on" onclick="go('today')"><i class="ti ti-calendar-event"></i>Today</button>
-    <button class="tab"    onclick="go('search')"><i class="ti ti-search"></i>Teams</button>
-    <button class="tab"    onclick="go('groups')"><i class="ti ti-layout-grid"></i>Groups</button>
-    <button class="tab"    onclick="go('watch')"><i class="ti ti-device-tv"></i>Watch</button>
+    <button type="button" class="tab on" onclick="go('today')"><i class="ti ti-calendar-event"></i>Today</button>
+    <button type="button" class="tab"    onclick="go('groups')"><i class="ti ti-layout-grid"></i>Groups</button>
+    <button type="button" class="tab"    onclick="go('bracket')"><i class="ti ti-tournament"></i>Bracket</button>
+    <button type="button" class="tab"    onclick="go('watch')"><i class="ti ti-device-tv"></i>Watch</button>
   </div>
 
-  <div id="v-today"  class="view on"></div>
-  <div id="v-search" class="view">
-    <div class="s-wrap">
-      <div class="s-row">
-        <input id="si" type="text" placeholder="Search country — USA, Brazil, France…"
-               oninput="onSearch(this.value)" autocomplete="off"/>
-        <button onclick="clearSearch()"><i class="ti ti-x"></i></button>
-      </div>
-    </div>
-    <div id="sdrop"></div>
-    <div id="sres"><div class="empty"><i class="ti ti-globe"></i>Type a country to see their schedule and where to watch.</div></div>
-  </div>
-  <div id="v-groups" class="view"></div>
-  <div id="v-watch"  class="view"></div>
+  <div id="v-today"   class="view on"></div>
+  <div id="v-bracket" class="view"></div>
+  <div id="v-groups"  class="view"></div>
+  <div id="v-watch"   class="view"></div>
 </div>
 
-<!-- STICKY SEARCH BAR (search tab only) -->
-<div class="sticky-s" id="sticky-s">
-  <div class="s-row">
-    <input id="si2" type="text" placeholder="Search country…"
-           oninput="onSearch(this.value)" autocomplete="off"/>
-    <button onclick="clearSearch()"><i class="ti ti-x"></i></button>
+<!-- TEAM SEARCH MODAL -->
+<div class="tsm" id="tsm" onclick="tsClickOutside(event)">
+  <div class="tsm-box" id="tsm-box">
+    <div class="tsm-hdr">
+      <i class="ti ti-search" style="color:var(--tx3);font-size:16px;flex-shrink:0"></i>
+      <input type="text" class="tsm-input" id="tsm-input"
+             placeholder="Search any country…"
+             oninput="onTeamSearch(this.value)" autocomplete="off"/>
+      <button type="button" class="tsm-close" onclick="closeTeamSearch()">✕</button>
+    </div>
+    <div class="tsm-results" id="tsm-results">
+      <div class="tsm-empty">Type a country name to see their schedule and group standings</div>
+    </div>
   </div>
 </div>
 
@@ -613,16 +667,16 @@ async function fetchScores(manual = false) {
 
 // ── Re-render every open view with latest LIVE data ──
 function syncAllViews() {
-  // Re-render Today (or team view within Today)
   if (_todayTeam) {
     document.getElementById('v-today').innerHTML = buildTeamHTML(_todayTeam, 'closeTodayTeam()');
   } else {
     renderToday();
   }
-  // Re-render Groups (whichever sub-state: grid / group / team)
   renderGroups();
-  // Re-render Teams search result
-  if (currentView === 'search' && currentTeam) showTeam(currentTeam, false);
+  // If team search modal is open, refresh it
+  if (currentTeam && document.getElementById('tsm').classList.contains('show')) {
+    showTeamInModal(currentTeam);
+  }
 }
 
 function scheduleNext() {
@@ -633,7 +687,7 @@ function scheduleNext() {
   const hasLive  = Object.values(LIVE).some(x => x.st === 'live' || x.st === 'ht');
   const todayKey = todayET();
   const hasToday = MATCHES.some(m => m.date === todayKey);
-  const delay    = hasLive ? 45_000 : hasToday ? 3 * 60_000 : 10 * 60_000;
+  const delay    = hasLive ? 45000 : hasToday ? 3 * 60000 : 10 * 60000;
   _refreshTimer  = setTimeout(() => fetchScores(false), delay);
 }
 
@@ -707,7 +761,7 @@ function buildTeamHTML(team, backFn) {
 
   let html = `
     <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
-      <button class="back" onclick="${backFn}" style="margin-bottom:0">
+      <button type="button" class="back" onclick="${backFn}" style="margin-bottom:0">
         <i class="ti ti-arrow-left"></i> Back
       </button>
       <span style="font-size:14px;font-weight:600;color:var(--tx)">
@@ -835,63 +889,108 @@ function renderToday() {
 }
 
 // ═══════════════════════════════════════════════════════
-// SEARCH / TEAMS VIEW
+// TEAM SEARCH MODAL
 // ═══════════════════════════════════════════════════════
 let currentTeam = null;
 
-function syncInputs(v) {
-  document.getElementById('si').value = v;
-  document.getElementById('si2').value = v;
+function openTeamSearch() {
+  document.getElementById('tsm').classList.add('show');
+  setTimeout(() => document.getElementById('tsm-input').focus(), 80);
+  onTeamSearch('');
 }
 
-function onSearch(v) {
-  syncInputs(v);
-  const q = v.trim().toLowerCase();
-  const drop = document.getElementById('sdrop');
-  const res  = document.getElementById('sres');
+function closeTeamSearch() {
+  document.getElementById('tsm').classList.remove('show');
+  document.getElementById('tsm-input').value = '';
+  document.getElementById('tsm-results').innerHTML =
+    '<div class="tsm-empty">Type a country name to see their schedule and group standings</div>';
+  currentTeam = null;
+}
+
+function tsClickOutside(e) {
+  if (e.target === document.getElementById('tsm')) closeTeamSearch();
+}
+
+function onTeamSearch(v) {
+  const q   = v.trim().toLowerCase();
+  const res = document.getElementById('tsm-results');
 
   if (!q) {
-    drop.innerHTML = '';
-    res.innerHTML = '<div class="empty"><i class="ti ti-globe"></i>Type a country to see their schedule and where to watch.</div>';
-    currentTeam = null;
+    res.innerHTML = '<div class="tsm-empty">Type a country name to see their schedule and group standings</div>';
     return;
   }
 
   const hits = Object.keys(FLAGS).filter(t => t.toLowerCase().includes(q));
-
   if (!hits.length) {
-    drop.innerHTML = '';
-    res.innerHTML = '<div class="empty"><i class="ti ti-alert-circle"></i>No team found. Try "France", "USA", or "Brazil".</div>';
-    currentTeam = null;
+    res.innerHTML = '<div class="tsm-empty">No team found — try "USA", "France" or "Brazil"</div>';
     return;
   }
 
-  // Exact match → go straight to team
   const exact = hits.find(t => t.toLowerCase() === q);
   if (exact || hits.length === 1) {
-    drop.innerHTML = '';
-    showTeam(exact || hits[0], true);
+    showTeamInModal(exact || hits[0]);
     return;
   }
 
-  // Multiple hits → show dropdown, don't auto-select
-  drop.innerHTML = '<div class="sdrop">' + hits.slice(0, 9).map(t =>
-    `<div class="sdi" onclick="pickTeam('${t.replace(/'/g,"\\'")}')">
-      <span class="sdi-flag">${FLAGS[t]}</span>
-      <div>
-        <div class="sdi-name">${t}</div>
-        <div class="sdi-sub">Group ${teamGroup(t)} · tap to view schedule</div>
-      </div>
-    </div>`
-  ).join('') + '</div>';
-  res.innerHTML = '';
+  res.innerHTML = hits.slice(0, 10).map(t =>
+    `<div class="tsm-item" onclick="showTeamInModal('${t.replace(/'/g,"\'")}')">
+      <span class="tsm-flag">${FLAGS[t]||'🏳️'}</span>
+      <div><div class="tsm-name">${t}</div>
+           <div class="tsm-sub">Group ${teamGroup(t)}</div></div>
+    </div>`).join('');
 }
 
-function pickTeam(t) {
-  syncInputs(t);
-  document.getElementById('sdrop').innerHTML = '';
-  showTeam(t, true);
+function showTeamInModal(team) {
+  currentTeam = team;
+  const g  = teamGroup(team);
+  const ms = MATCHES.filter(m => m.h === team || m.a === team);
+  const {sorted, stats} = calcStandings(g);
+
+  let html = `<div style="padding:12px 14px 0">
+    <button type="button" class="back" onclick="backToTeamSearch()" style="margin-bottom:10px">
+      <i class="ti ti-arrow-left"></i> Back
+    </button>
+    <div class="team-hdr" style="margin-bottom:12px">
+      <span class="team-hdr-fl">${FLAGS[team]||'🏳️'}</span>
+      <div><h2>${team}</h2><p>Group ${g} · ${ms.length} group stage matches</p></div>
+    </div>
+    <div class="sec-lbl" style="margin-bottom:8px">Group ${g} Standings</div>
+    <div class="stbl-wrap" style="margin-bottom:14px">
+      <table class="stbl"><thead><tr>
+        <th></th><th>Team</th><th>P</th><th>W</th><th>D</th><th>L</th><th>GD</th><th>Pts</th>
+      </tr></thead><tbody>`;
+
+  sorted.forEach((t, i) => {
+    const s = stats[t];
+    const gd = s.gd > 0 ? '+'+s.gd : ''+s.gd;
+    const sel = t === team;
+    html += `<tr class="${i<2?'adv':i===2?'maybe':''}" style="${sel?'background:var(--bg2)':''}">
+      <td class="stbl-pos">${i+1}</td>
+      <td><span class="stbl-flag">${FLAGS[t]||'🏳️'}</span>
+          <span class="stbl-name" style="${sel?'font-weight:700':''}"
+                onclick="showTeamInModal('${t.replace(/'/g,"\'")}'">${t}</span></td>
+      <td>${s.p}</td><td>${s.w}</td><td>${s.d}</td><td>${s.l}</td>
+      <td>${s.p>0?gd:'—'}</td>
+      <td style="font-weight:${s.pts>0?'700':'400'};color:${s.pts>=3?'#16a34a':'var(--tx)'}">${s.pts}</td>
+    </tr>`;
+  });
+
+  html += `</tbody></table>
+      <div class="stbl-key"><span class="adv">Advances</span><span class="maybe">Possible (best 3rd)</span></div>
+    </div>
+    <div class="sec-lbl" style="margin-bottom:8px">${team} — All Matches</div>
+  </div>
+  <div style="padding:0 14px 16px">${ms.map(m => matchCard(m,false)).join('')}</div>`;
+
+  document.getElementById('tsm-results').innerHTML = html;
 }
+
+function backToTeamSearch() {
+  const v = document.getElementById('tsm-input').value;
+  onTeamSearch(v);
+}
+
+function pickTeam(t) { showTeamInModal(t); }
 
 function showTeam(team, scroll) {
   currentTeam = team;
@@ -908,12 +1007,116 @@ function showTeam(team, scroll) {
   if (scroll) window.scrollTo({top:0, behavior:'smooth'});
 }
 
-function clearSearch() {
-  syncInputs('');
-  document.getElementById('sdrop').innerHTML = '';
-  document.getElementById('sres').innerHTML =
-    '<div class="empty"><i class="ti ti-globe"></i>Type a country to see their schedule and where to watch.</div>';
-  currentTeam = null;
+
+
+// ═══════════════════════════════════════════════════════
+// BRACKET VIEW
+// ═══════════════════════════════════════════════════════
+const BRACKET = {
+  r32: [
+    // Round of 32 — June 28 – July 3
+    {date:'Jun 28',time:'3:00 PM ET', venue:'SoFi Stadium, LA'},
+    {date:'Jun 29',time:'1:00 PM ET', venue:'NRG Stadium, Houston'},
+    {date:'Jun 29',time:'4:30 PM ET', venue:'Gillette Stadium, Boston'},
+    {date:'Jun 29',time:'9:00 PM ET', venue:'Estadio BBVA, Monterrey'},
+    {date:'Jun 30',time:'1:00 PM ET', venue:'AT&T Stadium, Dallas'},
+    {date:'Jun 30',time:'5:00 PM ET', venue:'MetLife Stadium, NJ'},
+    {date:'Jun 30',time:'9:00 PM ET', venue:'Estadio Azteca, Mexico City'},
+    {date:'Jul 1', time:'12:00 PM ET',venue:'Mercedes-Benz Stadium, Atlanta'},
+    {date:'Jul 1', time:'4:00 PM ET', venue:'Hard Rock Stadium, Miami'},
+    {date:'Jul 1', time:'8:00 PM ET', venue:'BC Place, Vancouver'},
+    {date:'Jul 2', time:'1:00 PM ET', venue:'Lumen Field, Seattle'},
+    {date:'Jul 2', time:'5:00 PM ET', venue:'Lincoln Financial Field, Philadelphia'},
+    {date:'Jul 2', time:'9:00 PM ET', venue:'Arrowhead Stadium, Kansas City'},
+    {date:'Jul 3', time:'1:00 PM ET', venue:'NRG Stadium, Houston'},
+    {date:'Jul 3', time:'5:00 PM ET', venue:'BMO Field, Toronto'},
+    {date:'Jul 3', time:'9:00 PM ET', venue:'Estadio Akron, Guadalajara'},
+  ],
+  r16: [
+    // Round of 16 — July 4–7
+    {date:'Jul 4', time:'3:00 PM ET', venue:'SoFi Stadium, LA'},
+    {date:'Jul 4', time:'7:00 PM ET', venue:'MetLife Stadium, NJ'},
+    {date:'Jul 5', time:'3:00 PM ET', venue:'AT&T Stadium, Dallas'},
+    {date:'Jul 5', time:'7:00 PM ET', venue:'Hard Rock Stadium, Miami'},
+    {date:'Jul 6', time:'3:00 PM ET', venue:'NRG Stadium, Houston'},
+    {date:'Jul 6', time:'7:00 PM ET', venue:'Lumen Field, Seattle'},
+    {date:'Jul 7', time:'3:00 PM ET', venue:'Mercedes-Benz Stadium, Atlanta'},
+    {date:'Jul 7', time:'7:00 PM ET', venue:'BC Place, Vancouver'},
+  ],
+  qf: [
+    // Quarterfinals — July 9–11
+    {date:'Jul 9', time:'3:00 PM ET', venue:'MetLife Stadium, NJ'},
+    {date:'Jul 9', time:'7:00 PM ET', venue:'SoFi Stadium, LA'},
+    {date:'Jul 10',time:'3:00 PM ET', venue:'AT&T Stadium, Dallas'},
+    {date:'Jul 11',time:'3:00 PM ET', venue:'Hard Rock Stadium, Miami'},
+  ],
+  sf: [
+    // Semifinals — July 14–15
+    {date:'Jul 14',time:'6:00 PM ET', venue:'MetLife Stadium, NJ'},
+    {date:'Jul 15',time:'6:00 PM ET', venue:'AT&T Stadium, Dallas'},
+  ],
+  third: [
+    {date:'Jul 18',time:'3:00 PM ET', venue:'Hard Rock Stadium, Miami'},
+  ],
+  final: [
+    {date:'Jul 19',time:'3:00 PM ET', venue:'MetLife Stadium, NJ'},
+  ]
+};
+
+function bmcHTML(slot, label) {
+  const isFinal = label === 'Final';
+  return `<div class="bmc${isFinal ? ' final' : ''}">
+    <div class="bmc-teams">
+      <div class="bmc-team">
+        <span class="bmc-flag">🏳️</span>
+        <span class="bmc-name bmc-tbd">TBD</span>
+      </div>
+      <div class="bmc-team">
+        <span class="bmc-flag">🏳️</span>
+        <span class="bmc-name bmc-tbd">TBD</span>
+      </div>
+    </div>
+    <div class="bmc-right">
+      <span class="bmc-date">${slot.date}</span>
+      <span class="bmc-time">${slot.time}</span>
+      <span class="bmc-venue">${slot.venue.split(',')[0]}</span>
+    </div>
+  </div>`;
+}
+
+function renderBracket() {
+  const el = document.getElementById('v-bracket');
+  if (!el) return;
+
+  const stages = [
+    {key:'r32',   label:'Round of 32',      sub:'June 28 – July 3'},
+    {key:'r16',   label:'Round of 16',      sub:'July 4 – 7'},
+    {key:'qf',    label:'Quarterfinals',    sub:'July 9 – 11'},
+    {key:'sf',    label:'Semifinals',       sub:'July 14 – 15'},
+    {key:'third', label:'Third Place',      sub:'July 18'},
+    {key:'final', label:'Final',            sub:'July 19 · MetLife Stadium, NJ'},
+  ];
+
+  let html = `<div style="padding-bottom:4px">
+    <p style="font-size:11px;color:var(--tx3);margin-bottom:14px;line-height:1.5">
+      Groups wrap up June 27. The top 2 from each group plus the 8 best 3rd-place teams advance. All kickoff times ET.
+    </p>`;
+
+  for (const stage of stages) {
+    const slots = BRACKET[stage.key];
+    html += `<div class="bracket-stage">
+      <div class="bracket-stage-lbl">
+        ${stage.label}
+        <span style="font-weight:400;opacity:.6;font-size:9px;letter-spacing:.3px;margin-left:4px">${stage.sub}</span>
+      </div>
+      <div class="bracket-matches">
+        ${slots.map(s => bmcHTML(s, stage.label)).join('')}
+      </div>
+    </div>`;
+  }
+
+  html += '</div>';
+  el.innerHTML = html;
 }
 
 // ═══════════════════════════════════════════════════════
@@ -926,7 +1129,7 @@ function renderGroups() {
   const el = document.getElementById('v-groups');
   let html = '<div class="gtabs">';
   Object.keys(GROUPS).forEach(g => {
-    html += `<button class="gtab${g === selGroup ? ' on' : ''}" onclick="selGrp('${g}')">${g}</button>`;
+    html += `<button type="button" class="gtab${g === selGroup ? ' on' : ''}" onclick="selGrp('${g}')">${g}</button>`;
   });
   html += '</div><div id="grp-body"></div>';
   el.innerHTML = html;
@@ -967,7 +1170,7 @@ function renderGroupTeam(team) {
 
   let html = `
     <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
-      <button class="back" onclick="selTeam=null;renderGroups()" style="margin-bottom:0">
+      <button type="button" class="back" onclick="selTeam=null;renderGroups()" style="margin-bottom:0">
         <i class="ti ti-arrow-left"></i> Group ${g}
       </button>
       <span style="font-size:14px;font-weight:600;color:var(--tx)">${FLAGS[team]||''} ${team}</span>
@@ -1047,7 +1250,7 @@ function renderGroupBody(g) {
 
   let html = `
     <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
-      <button class="back" onclick="selGroup=null;renderGroups()" style="margin-bottom:0">
+      <button type="button" class="back" onclick="selGroup=null;renderGroups()" style="margin-bottom:0">
         <i class="ti ti-arrow-left"></i> All groups
       </button>
       <span style="font-size:14px;font-weight:600;color:var(--tx)">Group ${g}</span>
@@ -1139,16 +1342,14 @@ let currentView = 'today';
 function go(name) {
   currentView = name;
   document.querySelectorAll('.tab').forEach((t, i) => {
-    t.classList.toggle('on', ['today','search','groups','watch'][i] === name);
+    t.classList.toggle('on', ['today','groups','bracket','watch'][i] === name);
   });
   document.querySelectorAll('.view').forEach(v => v.classList.remove('on'));
   document.getElementById('v-' + name).classList.add('on');
-  document.getElementById('sticky-s').style.display = name === 'search' ? 'block' : 'none';
 
-  // Sync the tab being opened with latest live data
-  if (name === 'today') renderToday();
-  if (name === 'groups') renderGroups();
-  if (name === 'search' && currentTeam) showTeam(currentTeam, false);
+  if (name === 'today')   renderToday();
+  if (name === 'bracket') renderBracket();
+  if (name === 'groups')  renderGroups();
 }
 
 // ═══════════════════════════════════════════════════════
@@ -1172,8 +1373,9 @@ function go(name) {
   const blob = new Blob([JSON.stringify(manifest)], {type:'application/manifest+json'});
   document.getElementById('pwa-manifest').href = URL.createObjectURL(blob);
 
-  // Service worker
+  // Service worker (blob URLs work Chrome/Firefox/iOS 16.4+)
   if ('serviceWorker' in navigator) {
+    try {
     const sw = `
 const C='wc2026-v2';
 self.addEventListener('install',e=>{self.skipWaiting()});
@@ -1195,7 +1397,8 @@ self.addEventListener('fetch',e=>{
   );
 });`;
     const swBlob = new Blob([sw], {type:'text/javascript'});
-    navigator.serviceWorker.register(URL.createObjectURL(swBlob)).catch(()=>{});
+      navigator.serviceWorker.register(URL.createObjectURL(swBlob)).catch(()=>{});
+    } catch(e) {}
   }
 
   // Android install prompt
@@ -1210,7 +1413,7 @@ self.addEventListener('fetch',e=>{
   const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent) && !window.MSStream;
   if (isIOS && !navigator.standalone) {
     const ios = document.createElement('div');
-    ios.style.cssText = 'background:#1a3a28;border:0.5px solid rgba(110,231,183,.2);border-radius:12px;padding:10px 14px;margin-bottom:12px;font-size:12px;color:rgba(255,255,255,.75);line-height:1.5';
+    ios.style.cssText = 'background:#1a3a28;border:1px solid rgba(110,231,183,.15);border-radius:12px;padding:10px 14px;margin-bottom:12px;font-size:12px;color:rgba(255,255,255,.75);line-height:1.5';
     ios.innerHTML = '📲 <strong style="color:#6ee7b7">Install as app:</strong> Tap the Share button in Safari → "Add to Home Screen"';
     const app = document.querySelector('.app');
     app.insertBefore(ios, app.firstChild);
@@ -1221,6 +1424,7 @@ self.addEventListener('fetch',e=>{
 // INIT
 // ═══════════════════════════════════════════════════════
 renderToday();
+renderBracket();
 renderGroups();
 renderWatch();
 go('today');
