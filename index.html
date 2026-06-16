@@ -250,25 +250,40 @@ button,input,[onclick]{touch-action:manipulation}
 .tsd-sub{font-size:11px;color:var(--tx2);margin-top:1px}
 
 /* ── BRACKET VIEW ── */
-.bracket-stage{margin-bottom:20px}
-.bracket-stage-lbl{font-size:10px;font-weight:600;color:var(--tx3);text-transform:uppercase;
-  letter-spacing:.8px;margin-bottom:8px;display:flex;align-items:center;gap:6px}
-.bracket-stage-lbl::after{content:'';flex:1;height:1px;background:var(--bd)}
-.bracket-matches{display:flex;flex-direction:column;gap:7px}
-.bmc{background:var(--bg);border:1px solid var(--bd);border-radius:var(--rl);
-  padding:10px 14px;display:flex;align-items:center;gap:10px}
-.bmc.final{border-color:#2d7a4f;border-width:1.5px}
-.bmc-teams{flex:1;display:flex;flex-direction:column;gap:5px}
-.bmc-team{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--tx2)}
-.bmc-team.winner{color:var(--tx);font-weight:600}
-.bmc-flag{font-size:16px;width:20px;text-align:center}
-.bmc-name{flex:1}
-.bmc-score{font-size:13px;font-weight:600;color:var(--tx);min-width:18px;text-align:right}
-.bmc-right{display:flex;flex-direction:column;align-items:flex-end;gap:3px;flex-shrink:0}
-.bmc-date{font-size:10px;color:var(--tx3);white-space:nowrap}
-.bmc-time{font-size:10px;color:var(--tx3);white-space:nowrap}
-.bmc-venue{font-size:10px;color:var(--tx3);white-space:nowrap}
-.bmc-tbd{font-size:11px;color:var(--tx3);font-style:italic}
+.br-tabs{display:flex;gap:5px;overflow-x:auto;margin-bottom:12px;padding-bottom:2px;
+  -webkit-overflow-scrolling:touch;scrollbar-width:none;flex-wrap:nowrap}
+.br-tabs::-webkit-scrollbar{display:none}
+.br-tab{padding:6px 13px;font-size:12px;font-weight:600;cursor:pointer;
+  color:var(--tx2);background:var(--bg);border:1px solid var(--bd);
+  border-radius:20px;font-family:var(--font);transition:all .14s;
+  flex-shrink:0;white-space:nowrap}
+.br-tab:hover{border-color:#2d7a4f;color:var(--tx)}
+.br-tab.on{background:#0a2416;color:#fff;border-color:#0a2416}
+
+.br-round-hdr{display:flex;align-items:baseline;justify-content:space-between;
+  margin-bottom:10px}
+.br-round-title{font-size:15px;font-weight:700;color:var(--tx)}
+.br-round-dates{font-size:11px;color:var(--tx3)}
+
+.br-matches{display:flex;flex-direction:column;gap:8px}
+.br-mc{background:var(--bg);border:1px solid var(--bd);border-radius:var(--rl);
+  padding:11px 12px;display:flex;align-items:center;gap:10px;transition:border-color .15s}
+.br-mc.br-final{border-color:#2d7a4f;border-width:1.5px;
+  background:linear-gradient(135deg,rgba(45,122,79,.06) 0%,transparent 100%)}
+.br-mc-num{font-size:11px;font-weight:700;color:var(--tx3);width:18px;
+  flex-shrink:0;text-align:center}
+.br-mc-body{flex:1;display:flex;flex-direction:column;gap:6px;min-width:0}
+.br-team{display:flex;align-items:center;gap:8px}
+.br-flag{font-size:17px;width:22px;text-align:center;flex-shrink:0}
+.br-name{font-size:12px;font-weight:500;color:var(--tx);line-height:1.2}
+.br-name.tbd{color:var(--tx3);font-style:italic;font-weight:400}
+.br-divider{height:1px;background:var(--bd);margin:0 0 0 30px}
+.br-mc-right{display:flex;flex-direction:column;align-items:flex-end;
+  gap:2px;flex-shrink:0;min-width:90px}
+.br-mc-date{font-size:10px;font-weight:600;color:var(--tx2)}
+.br-mc-time{font-size:10px;color:var(--tx3)}
+.br-mc-venue{font-size:10px;color:var(--tx3);text-align:right;line-height:1.3}
+.br-mc-city{font-size:10px;color:var(--tx3);text-align:right}
 
 
 </style>
@@ -956,116 +971,134 @@ function showTeam(team, scroll) {
 
 
 // ═══════════════════════════════════════════════════════
-// BRACKET VIEW
+// BRACKET VIEW — pill tabs per round
 // ═══════════════════════════════════════════════════════
-const BRACKET = {
-  r32: [
-    // Round of 32 — June 28 – July 3
-    {date:'Jun 28',time:'3:00 PM ET', venue:'SoFi Stadium, LA'},
-    {date:'Jun 29',time:'1:00 PM ET', venue:'NRG Stadium, Houston'},
-    {date:'Jun 29',time:'4:30 PM ET', venue:'Gillette Stadium, Boston'},
-    {date:'Jun 29',time:'9:00 PM ET', venue:'Estadio BBVA, Monterrey'},
-    {date:'Jun 30',time:'1:00 PM ET', venue:'AT&T Stadium, Dallas'},
-    {date:'Jun 30',time:'5:00 PM ET', venue:'MetLife Stadium, NJ'},
-    {date:'Jun 30',time:'9:00 PM ET', venue:'Estadio Azteca, Mexico City'},
-    {date:'Jul 1', time:'12:00 PM ET',venue:'Mercedes-Benz Stadium, Atlanta'},
-    {date:'Jul 1', time:'4:00 PM ET', venue:'Hard Rock Stadium, Miami'},
-    {date:'Jul 1', time:'8:00 PM ET', venue:'BC Place, Vancouver'},
-    {date:'Jul 2', time:'1:00 PM ET', venue:'Lumen Field, Seattle'},
-    {date:'Jul 2', time:'5:00 PM ET', venue:'Lincoln Financial Field, Philadelphia'},
-    {date:'Jul 2', time:'9:00 PM ET', venue:'Arrowhead Stadium, Kansas City'},
-    {date:'Jul 3', time:'1:00 PM ET', venue:'NRG Stadium, Houston'},
-    {date:'Jul 3', time:'5:00 PM ET', venue:'BMO Field, Toronto'},
-    {date:'Jul 3', time:'9:00 PM ET', venue:'Estadio Akron, Guadalajara'},
-  ],
-  r16: [
-    // Round of 16 — July 4–7
-    {date:'Jul 4', time:'3:00 PM ET', venue:'SoFi Stadium, LA'},
-    {date:'Jul 4', time:'7:00 PM ET', venue:'MetLife Stadium, NJ'},
-    {date:'Jul 5', time:'3:00 PM ET', venue:'AT&T Stadium, Dallas'},
-    {date:'Jul 5', time:'7:00 PM ET', venue:'Hard Rock Stadium, Miami'},
-    {date:'Jul 6', time:'3:00 PM ET', venue:'NRG Stadium, Houston'},
-    {date:'Jul 6', time:'7:00 PM ET', venue:'Lumen Field, Seattle'},
-    {date:'Jul 7', time:'3:00 PM ET', venue:'Mercedes-Benz Stadium, Atlanta'},
-    {date:'Jul 7', time:'7:00 PM ET', venue:'BC Place, Vancouver'},
-  ],
-  qf: [
-    // Quarterfinals — July 9–11
-    {date:'Jul 9', time:'3:00 PM ET', venue:'MetLife Stadium, NJ'},
-    {date:'Jul 9', time:'7:00 PM ET', venue:'SoFi Stadium, LA'},
-    {date:'Jul 10',time:'3:00 PM ET', venue:'AT&T Stadium, Dallas'},
-    {date:'Jul 11',time:'3:00 PM ET', venue:'Hard Rock Stadium, Miami'},
-  ],
-  sf: [
-    // Semifinals — July 14–15
-    {date:'Jul 14',time:'6:00 PM ET', venue:'MetLife Stadium, NJ'},
-    {date:'Jul 15',time:'6:00 PM ET', venue:'AT&T Stadium, Dallas'},
-  ],
-  third: [
-    {date:'Jul 18',time:'3:00 PM ET', venue:'Hard Rock Stadium, Miami'},
-  ],
-  final: [
-    {date:'Jul 19',time:'3:00 PM ET', venue:'MetLife Stadium, NJ'},
-  ]
-};
+const BRACKET_ROUNDS = [
+  {
+    id:'r32', label:'Round of 32', dates:'Jun 28 – Jul 3',
+    matches:[
+      {date:'Sun Jun 28', time:'3:00 PM ET',  home:'Group A 2nd', away:'Group B 2nd',  venue:'SoFi Stadium',          city:'Los Angeles, CA'},
+      {date:'Sun Jun 29', time:'1:00 PM ET',  home:'Group C 1st', away:'Group F 2nd',  venue:'NRG Stadium',            city:'Houston, TX'},
+      {date:'Sun Jun 29', time:'4:30 PM ET',  home:'Group E 1st', away:'Best 3rd',     venue:'Gillette Stadium',       city:'Boston, MA'},
+      {date:'Sun Jun 29', time:'9:00 PM ET',  home:'Group F 1st', away:'Group C 2nd',  venue:'Estadio BBVA',           city:'Monterrey, MX'},
+      {date:'Mon Jun 30', time:'1:00 PM ET',  home:'Group E 2nd', away:'Group I 2nd',  venue:'AT&T Stadium',           city:'Arlington, TX'},
+      {date:'Mon Jun 30', time:'5:00 PM ET',  home:'Group I 1st', away:'Best 3rd',     venue:'MetLife Stadium',        city:'East Rutherford, NJ'},
+      {date:'Mon Jun 30', time:'9:00 PM ET',  home:'Group A 1st', away:'Best 3rd',     venue:'Estadio Azteca',         city:'Mexico City, MX'},
+      {date:'Tue Jul 1',  time:'12:00 PM ET', home:'Group L 1st', away:'Best 3rd',     venue:'Mercedes-Benz Stadium',  city:'Atlanta, GA'},
+      {date:'Tue Jul 1',  time:'4:00 PM ET',  home:'Group D 2nd', away:'Group H 1st',  venue:'Hard Rock Stadium',      city:'Miami, FL'},
+      {date:'Tue Jul 1',  time:'8:00 PM ET',  home:'Group B 1st', away:'Best 3rd',     venue:'BC Place',               city:'Vancouver, CA'},
+      {date:'Wed Jul 2',  time:'1:00 PM ET',  home:'Group D 1st', away:'Best 3rd',     venue:'Lumen Field',            city:'Seattle, WA'},
+      {date:'Wed Jul 2',  time:'5:00 PM ET',  home:'Group J 2nd', away:'Group K 2nd',  venue:'Lincoln Financial Field',city:'Philadelphia, PA'},
+      {date:'Wed Jul 2',  time:'9:00 PM ET',  home:'Group H 2nd', away:'Best 3rd',     venue:'Arrowhead Stadium',      city:'Kansas City, MO'},
+      {date:'Thu Jul 3',  time:'1:00 PM ET',  home:'Group G 1st', away:'Group L 2nd',  venue:'NRG Stadium',            city:'Houston, TX'},
+      {date:'Thu Jul 3',  time:'5:00 PM ET',  home:'Group B 2nd', away:'Group G 2nd',  venue:'BMO Field',              city:'Toronto, CA'},
+      {date:'Thu Jul 3',  time:'9:00 PM ET',  home:'Group J 1st', away:'Group K 1st',  venue:'Estadio Akron',          city:'Guadalajara, MX'},
+    ]
+  },
+  {
+    id:'r16', label:'Round of 16', dates:'Jul 4 – 7',
+    matches:[
+      {date:'Fri Jul 4',  time:'3:00 PM ET',  home:'R32 Winner 1',  away:'R32 Winner 2',  venue:'SoFi Stadium',         city:'Los Angeles, CA'},
+      {date:'Fri Jul 4',  time:'7:00 PM ET',  home:'R32 Winner 3',  away:'R32 Winner 4',  venue:'MetLife Stadium',      city:'East Rutherford, NJ'},
+      {date:'Sat Jul 5',  time:'3:00 PM ET',  home:'R32 Winner 5',  away:'R32 Winner 6',  venue:'AT&T Stadium',         city:'Arlington, TX'},
+      {date:'Sat Jul 5',  time:'7:00 PM ET',  home:'R32 Winner 7',  away:'R32 Winner 8',  venue:'Hard Rock Stadium',    city:'Miami, FL'},
+      {date:'Sun Jul 6',  time:'3:00 PM ET',  home:'R32 Winner 9',  away:'R32 Winner 10', venue:'NRG Stadium',          city:'Houston, TX'},
+      {date:'Sun Jul 6',  time:'7:00 PM ET',  home:'R32 Winner 11', away:'R32 Winner 12', venue:'Lumen Field',          city:'Seattle, WA'},
+      {date:'Mon Jul 7',  time:'3:00 PM ET',  home:'R32 Winner 13', away:'R32 Winner 14', venue:'Mercedes-Benz Stadium',city:'Atlanta, GA'},
+      {date:'Mon Jul 7',  time:'7:00 PM ET',  home:'R32 Winner 15', away:'R32 Winner 16', venue:'BC Place',             city:'Vancouver, CA'},
+    ]
+  },
+  {
+    id:'qf', label:'Quarterfinals', dates:'Jul 9 – 11',
+    matches:[
+      {date:'Wed Jul 9',  time:'3:00 PM ET', home:'R16 Winner 1', away:'R16 Winner 2', venue:'MetLife Stadium',        city:'East Rutherford, NJ'},
+      {date:'Wed Jul 9',  time:'7:00 PM ET', home:'R16 Winner 3', away:'R16 Winner 4', venue:'SoFi Stadium',          city:'Los Angeles, CA'},
+      {date:'Thu Jul 10', time:'3:00 PM ET', home:'R16 Winner 5', away:'R16 Winner 6', venue:'AT&T Stadium',          city:'Arlington, TX'},
+      {date:'Fri Jul 11', time:'3:00 PM ET', home:'R16 Winner 7', away:'R16 Winner 8', venue:'Hard Rock Stadium',     city:'Miami, FL'},
+    ]
+  },
+  {
+    id:'sf', label:'Semifinals', dates:'Jul 14 – 15',
+    matches:[
+      {date:'Mon Jul 14', time:'6:00 PM ET', home:'QF Winner 1', away:'QF Winner 2', venue:'MetLife Stadium',  city:'East Rutherford, NJ'},
+      {date:'Tue Jul 15', time:'6:00 PM ET', home:'QF Winner 3', away:'QF Winner 4', venue:'AT&T Stadium',    city:'Arlington, TX'},
+    ]
+  },
+  {
+    id:'third', label:'3rd Place', dates:'Jul 18',
+    matches:[
+      {date:'Fri Jul 18', time:'3:00 PM ET', home:'SF Loser 1', away:'SF Loser 2', venue:'Hard Rock Stadium', city:'Miami, FL'},
+    ]
+  },
+  {
+    id:'final', label:'Final', dates:'Jul 19',
+    matches:[
+      {date:'Sun Jul 19', time:'3:00 PM ET', home:'SF Winner 1', away:'SF Winner 2', venue:'MetLife Stadium',  city:'East Rutherford, NJ'},
+    ]
+  },
+];
 
-function bmcHTML(slot, label) {
-  const isFinal = label === 'Final';
-  return `<div class="bmc${isFinal ? ' final' : ''}">
-    <div class="bmc-teams">
-      <div class="bmc-team">
-        <span class="bmc-flag">🏳️</span>
-        <span class="bmc-name bmc-tbd">TBD</span>
-      </div>
-      <div class="bmc-team">
-        <span class="bmc-flag">🏳️</span>
-        <span class="bmc-name bmc-tbd">TBD</span>
-      </div>
-    </div>
-    <div class="bmc-right">
-      <span class="bmc-date">${slot.date}</span>
-      <span class="bmc-time">${slot.time}</span>
-      <span class="bmc-venue">${slot.venue.split(',')[0]}</span>
-    </div>
-  </div>`;
-}
+let bracketRound = 'r32';
 
 function renderBracket() {
   const el = document.getElementById('v-bracket');
   if (!el) return;
 
-  const stages = [
-    {key:'r32',   label:'Round of 32',      sub:'June 28 – July 3'},
-    {key:'r16',   label:'Round of 16',      sub:'July 4 – 7'},
-    {key:'qf',    label:'Quarterfinals',    sub:'July 9 – 11'},
-    {key:'sf',    label:'Semifinals',       sub:'July 14 – 15'},
-    {key:'third', label:'Third Place',      sub:'July 18'},
-    {key:'final', label:'Final',            sub:'July 19 · MetLife Stadium, NJ'},
-  ];
+  const round = BRACKET_ROUNDS.find(r => r.id === bracketRound) || BRACKET_ROUNDS[0];
 
-  let html = `<div style="padding-bottom:4px">
-    <p style="font-size:11px;color:var(--tx3);margin-bottom:14px;line-height:1.5">
-      Groups wrap up June 27. The top 2 from each group plus the 8 best 3rd-place teams advance. All kickoff times ET.
-    </p>`;
+  // Pill tabs
+  let html = '<div class="br-tabs">';
+  BRACKET_ROUNDS.forEach(r => {
+    html += `<button type="button" class="br-tab${r.id === bracketRound ? ' on' : ''}"
+      onclick="setBracketRound('${r.id}')">${r.label}</button>`;
+  });
+  html += '</div>';
 
-  for (const stage of stages) {
-    const slots = BRACKET[stage.key];
-    html += `<div class="bracket-stage">
-      <div class="bracket-stage-lbl">
-        ${stage.label}
-        <span style="font-weight:400;opacity:.6;font-size:9px;letter-spacing:.3px;margin-left:4px">${stage.sub}</span>
+  // Round header
+  html += `<div class="br-round-hdr">
+    <span class="br-round-title">${round.label}</span>
+    <span class="br-round-dates">${round.dates}</span>
+  </div>`;
+
+  // Match cards
+  html += '<div class="br-matches">';
+  round.matches.forEach((m, idx) => {
+    const isFinal   = round.id === 'final';
+    const isPlayed  = false; // TBD when teams are known
+    html += `<div class="br-mc${isFinal ? ' br-final' : ''}">
+      <div class="br-mc-num">${round.id === 'r32' ? idx + 1 : ''}</div>
+      <div class="br-mc-body">
+        <div class="br-team">
+          <span class="br-flag">🏳️</span>
+          <span class="br-name tbd">${m.home}</span>
+        </div>
+        <div class="br-divider"></div>
+        <div class="br-team">
+          <span class="br-flag">🏳️</span>
+          <span class="br-name tbd">${m.away}</span>
+        </div>
       </div>
-      <div class="bracket-matches">
-        ${slots.map(s => bmcHTML(s, stage.label)).join('')}
+      <div class="br-mc-right">
+        <div class="br-mc-date">${m.date}</div>
+        <div class="br-mc-time">${m.time}</div>
+        <div class="br-mc-venue">${m.venue}</div>
+        <div class="br-mc-city">${m.city}</div>
       </div>
     </div>`;
-  }
-
+  });
   html += '</div>';
+
   el.innerHTML = html;
 }
 
+function setBracketRound(id) {
+  bracketRound = id;
+  renderBracket();
+  window.scrollTo({top: 0, behavior: 'smooth'});
+}
+
 // ═══════════════════════════════════════════════════════
+// GROUPS VIEW// ═══════════════════════════════════════════════════════
 // GROUPS VIEW
 // ═══════════════════════════════════════════════════════
 let selGroup = null;
