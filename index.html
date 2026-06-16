@@ -725,7 +725,7 @@ function matchCard(m, tapTeams) {
     midHTML = `<span class="mc-score">${sc}</span>`;
     if (st === 'live' && lv.min) midHTML += `<span class="mc-min">${lv.min}′</span>`;
   } else {
-    midHTML = `<span class="mc-time-txt">${m.kick}</span><span class="mc-vs">vs</span>`;
+    midHTML = `<span class="mc-vs">vs</span>`;
   }
 
   const tv  = m.tv.map(x  => `<span class="chip ce">${x}</span>`).join('');
