@@ -16,14 +16,14 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.31.0/dist/tabler-icons.min.css"/>
 <style>
 :root{
-  --bg:#fff;--bg2:#f5f5f4;--bg3:#e8e5e0;
+  --bg:#fff;--bg2:#f5f5f4;
   --tx:#1c1c1a;--tx2:#6b6b67;--tx3:#9b9b96;
   --bd:rgba(0,0,0,0.09);--bd2:rgba(0,0,0,0.17);
   --r:8px;--rl:12px;
   --font:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
 }
 @media(prefers-color-scheme:dark){:root{
-  --bg:#1c1c1e;--bg2:#2c2c2e;--bg3:#3a3a3c;
+  --bg:#1c1c1e;--bg2:#2c2c2e;
   --tx:#f2f2f7;--tx2:#aeaeb2;--tx3:#636366;
   --bd:rgba(255,255,255,0.09);--bd2:rgba(255,255,255,0.18);
 }}
@@ -99,7 +99,6 @@ body{font-family:var(--font);background:var(--bg2);min-height:100vh;color:var(--
 
 .mc-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
 .mc-grp{font-size:10px;color:var(--tx3);text-transform:uppercase;letter-spacing:.5px}
-.mc-round{font-size:10px;color:var(--tx3)}
 
 /* status badge */
 .bdg{font-size:10px;font-weight:600;padding:2px 9px;border-radius:20px;letter-spacing:.2px}
@@ -185,10 +184,12 @@ body{font-family:var(--font);background:var(--bg2);min-height:100vh;color:var(--
 .gctf{font-size:15px}
 .gctn{font-size:12px;color:var(--tx);transition:color .12s}
 
-.gtabs{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:12px}
-.gtab{padding:5px 11px;font-size:11px;font-weight:500;cursor:pointer;color:var(--tx2);
-  background:var(--bg);border:0.5px solid var(--bd);border-radius:var(--r);
-  font-family:var(--font);transition:all .14s}
+.gtabs{display:flex;gap:5px;flex-wrap:nowrap;overflow-x:auto;margin-bottom:12px;
+  padding-bottom:2px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.gtabs::-webkit-scrollbar{display:none}
+.gtab{padding:6px 13px;font-size:12px;font-weight:600;cursor:pointer;color:var(--tx2);
+  background:var(--bg);border:0.5px solid var(--bd);border-radius:20px;
+  font-family:var(--font);transition:all .14s;flex-shrink:0;white-space:nowrap}
 .gtab:hover{border-color:#2d7a4f;color:var(--tx)}
 .gtab.on{background:#0a2416;color:#fff;border-color:#0a2416}
 
@@ -313,15 +314,12 @@ function todayET() {
   const d = nowET();
   return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
 }
-function fmtTimeET(isoStr) {
-  // Convert UTC ISO string to "3:00 PM ET"
-  const d = new Date(isoStr);
-  return d.toLocaleTimeString('en-US', {
-    hour:'numeric', minute:'2-digit',
-    timeZone:'America/New_York',
-    hour12:true
-  }).replace(' AM',' AM ET').replace(' PM',' PM ET');
+function fmtMatchDate(dateStr) {
+  // "2026-06-21" → "Sun Jun 21"
+  const d = new Date(dateStr + 'T12:00:00');
+  return d.toLocaleDateString('en-US', {weekday:'short', month:'short', day:'numeric'});
 }
+
 function fmtUpdated() {
   return nowET().toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',hour12:true,timeZone:'America/New_York'});
 }
@@ -364,83 +362,103 @@ const teamGroup = t => Object.keys(GROUPS).find(g => GROUPS[g].includes(t)) || '
 // ═══════════════════════════════════════════════════════
 // MATCH SCHEDULE  (all times in ET, dates in ET)
 // ═══════════════════════════════════════════════════════
-// fdId = football-data.org fixture ID (fill in once you have the token
-//         and can verify IDs via /v4/competitions/WC/matches)
-// We match by home+away team name as primary, fdId as secondary.
+// Matches are paired to API results by home+away team name.
 const MATCHES = [
-  // ── Matchday 1 ──
-  {fdId:null,date:'2026-06-11',kick:'3:00 PM ET',g:'A',h:'Mexico',a:'South Africa',v:'Estadio Azteca',c:'Mexico City',tv:['FOX','Tubi'],tvs:['Telemundo'],str:['FOX One'],sc:'2-0',st:'ft'},
-  {fdId:null,date:'2026-06-11',kick:'10:00 PM ET',g:'A',h:'South Korea',a:'Czechia',v:'Estadio Akron',c:'Guadalajara',tv:['FS1'],tvs:['Telemundo'],str:['FOX One'],sc:'2-1',st:'ft'},
-  {fdId:null,date:'2026-06-12',kick:'3:00 PM ET',g:'B',h:'Canada',a:'Bosnia and Herzegovina',v:'BMO Field',c:'Toronto',tv:['FOX'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:'1-1',st:'ft'},
-  {fdId:null,date:'2026-06-12',kick:'9:00 PM ET',g:'D',h:'United States',a:'Paraguay',v:'SoFi Stadium',c:'Inglewood, CA',tv:['FOX','Tubi'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:'4-1',st:'ft'},
-  // ── Matchday 2 ──
-  {fdId:null,date:'2026-06-13',kick:'3:00 PM ET',g:'C',h:'Brazil',a:'Morocco',v:'MetLife Stadium',c:'East Rutherford, NJ',tv:['FOX'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:'1-1',st:'ft'},
-  {fdId:null,date:'2026-06-13',kick:'6:00 PM ET',g:'B',h:'Qatar',a:'Switzerland',v:"Levi's Stadium",c:'Santa Clara, CA',tv:['FS1'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:'1-1',st:'ft'},
-  {fdId:null,date:'2026-06-13',kick:'9:00 PM ET',g:'C',h:'Haiti',a:'Scotland',v:'Gillette Stadium',c:'Foxborough, MA',tv:['FS1'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:'0-1',st:'ft'},
-  {fdId:null,date:'2026-06-14',kick:'1:00 PM ET',g:'E',h:'Germany',a:'Curaçao',v:'AT&T Stadium',c:'Arlington, TX',tv:['FOX'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:'7-1',st:'ft'},
-  {fdId:null,date:'2026-06-14',kick:'4:00 PM ET',g:'F',h:'Netherlands',a:'Japan',v:'SoFi Stadium',c:'Inglewood, CA',tv:['FOX'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:'2-2',st:'ft'},
-  {fdId:null,date:'2026-06-14',kick:'7:00 PM ET',g:'E',h:"Côte d'Ivoire",a:'Ecuador',v:'NRG Stadium',c:'Houston, TX',tv:['FS1'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:'1-0',st:'ft'},
-  {fdId:null,date:'2026-06-14',kick:'10:00 PM ET',g:'D',h:'Australia',a:'Türkiye',v:'BC Place',c:'Vancouver',tv:['FS1'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:'2-0',st:'ft'},
-  {fdId:null,date:'2026-06-14',kick:'10:00 PM ET',g:'F',h:'Sweden',a:'Tunisia',v:'BC Place',c:'Vancouver',tv:['FS1'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:'5-1',st:'ft'},
-  {fdId:null,date:'2026-06-15',kick:'1:00 PM ET',g:'H',h:'Spain',a:'Cabo Verde',v:'Mercedes-Benz Stadium',c:'Atlanta, GA',tv:['FOX'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:'0-0',st:'ft'},
-  {fdId:null,date:'2026-06-15',kick:'4:00 PM ET',g:'G',h:'Belgium',a:'New Zealand',v:'Hard Rock Stadium',c:'Miami, FL',tv:['FOX'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:'3-1',st:'ft'},
-  {fdId:null,date:'2026-06-15',kick:'6:00 PM ET',g:'G',h:'Egypt',a:'IR Iran',v:'Lumen Field',c:'Seattle, WA',tv:['FS1'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:'1-1',st:'ft'},
-  {fdId:null,date:'2026-06-15',kick:'6:00 PM ET',g:'H',h:'Saudi Arabia',a:'Uruguay',v:'Hard Rock Stadium',c:'Miami, FL',tv:['FOX'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:'1-1',st:'ft'},
-  {fdId:null,date:'2026-06-16',kick:'3:00 PM ET',g:'I',h:'France',a:'Senegal',v:'MetLife Stadium',c:'East Rutherford, NJ',tv:['FOX'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
-  {fdId:null,date:'2026-06-16',kick:'6:00 PM ET',g:'I',h:'Iraq',a:'Norway',v:'Gillette Stadium',c:'Foxborough, MA',tv:['FS1'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
-  {fdId:null,date:'2026-06-16',kick:'9:00 PM ET',g:'J',h:'Argentina',a:'Algeria',v:'Arrowhead Stadium',c:'Kansas City, MO',tv:['FOX'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
-  {fdId:null,date:'2026-06-16',kick:'12:00 AM ET',g:'J',h:'Austria',a:'Jordan',v:"Levi's Stadium",c:'Santa Clara, CA',tv:['FS1'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
-  {fdId:null,date:'2026-06-17',kick:'1:00 PM ET',g:'K',h:'Portugal',a:'Congo DR',v:'NRG Stadium',c:'Houston, TX',tv:['FOX'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
-  {fdId:null,date:'2026-06-17',kick:'4:00 PM ET',g:'L',h:'England',a:'Croatia',v:'AT&T Stadium',c:'Arlington, TX',tv:['FOX'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
-  {fdId:null,date:'2026-06-17',kick:'7:00 PM ET',g:'L',h:'Ghana',a:'Panama',v:'BMO Field',c:'Toronto',tv:['FS1'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
-  {fdId:null,date:'2026-06-17',kick:'10:00 PM ET',g:'K',h:'Uzbekistan',a:'Colombia',v:'Estadio Akron',c:'Guadalajara',tv:['FS1'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
-  // ── Matchday 3 ──
-  {fdId:null,date:'2026-06-18',kick:'12:00 PM ET',g:'A',h:'Czechia',a:'South Africa',v:'Mercedes-Benz Stadium',c:'Atlanta, GA',tv:['FOX'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
-  {fdId:null,date:'2026-06-18',kick:'3:00 PM ET',g:'B',h:'Switzerland',a:'Bosnia and Herzegovina',v:'SoFi Stadium',c:'Inglewood, CA',tv:['FOX'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
-  {fdId:null,date:'2026-06-18',kick:'6:00 PM ET',g:'B',h:'Canada',a:'Qatar',v:'BC Place',c:'Vancouver',tv:['FS1'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
-  {fdId:null,date:'2026-06-18',kick:'9:00 PM ET',g:'A',h:'Mexico',a:'South Korea',v:'Estadio Akron',c:'Guadalajara',tv:['FS1'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
-  {fdId:null,date:'2026-06-19',kick:'3:00 PM ET',g:'D',h:'United States',a:'Australia',v:'Lumen Field',c:'Seattle, WA',tv:['FOX'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
-  {fdId:null,date:'2026-06-19',kick:'6:00 PM ET',g:'C',h:'Scotland',a:'Morocco',v:'Gillette Stadium',c:'Foxborough, MA',tv:['FS1'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
-  {fdId:null,date:'2026-06-19',kick:'9:00 PM ET',g:'C',h:'Brazil',a:'Haiti',v:'Lincoln Financial Field',c:'Philadelphia, PA',tv:['FOX'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
-  {fdId:null,date:'2026-06-20',kick:'3:00 PM ET',g:'D',h:'Türkiye',a:'Paraguay',v:"Levi's Stadium",c:'Santa Clara, CA',tv:['FS1'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
-  {fdId:null,date:'2026-06-20',kick:'6:00 PM ET',g:'E',h:'Germany',a:"Côte d'Ivoire",v:'Arrowhead Stadium',c:'Kansas City, MO',tv:['FOX'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
-  {fdId:null,date:'2026-06-20',kick:'9:00 PM ET',g:'F',h:'Netherlands',a:'Tunisia',v:'Hard Rock Stadium',c:'Miami, FL',tv:['FS1'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
-  {fdId:null,date:'2026-06-21',kick:'12:00 PM ET',g:'E',h:'Ecuador',a:'Curaçao',v:'Lincoln Financial Field',c:'Philadelphia, PA',tv:['FOX'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
-  {fdId:null,date:'2026-06-21',kick:'4:00 PM ET',g:'F',h:'Japan',a:'Sweden',v:'MetLife Stadium',c:'East Rutherford, NJ',tv:['FS1'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
-  {fdId:null,date:'2026-06-21',kick:'8:00 PM ET',g:'H',h:'Spain',a:'Saudi Arabia',v:'AT&T Stadium',c:'Arlington, TX',tv:['FOX'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
-  {fdId:null,date:'2026-06-22',kick:'1:00 PM ET',g:'J',h:'Argentina',a:'Austria',v:'AT&T Stadium',c:'Arlington, TX',tv:['FOX'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
-  {fdId:null,date:'2026-06-22',kick:'5:00 PM ET',g:'I',h:'France',a:'Iraq',v:'Lincoln Financial Field',c:'Philadelphia, PA',tv:['FOX'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
-  {fdId:null,date:'2026-06-22',kick:'8:00 PM ET',g:'I',h:'Norway',a:'Senegal',v:'MetLife Stadium',c:'East Rutherford, NJ',tv:['FOX'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
-  {fdId:null,date:'2026-06-22',kick:'11:00 PM ET',g:'J',h:'Jordan',a:'Algeria',v:"Levi's Stadium",c:'Santa Clara, CA',tv:['FS1'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
-  {fdId:null,date:'2026-06-23',kick:'1:00 PM ET',g:'K',h:'Portugal',a:'Uzbekistan',v:'NRG Stadium',c:'Houston, TX',tv:['FOX'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
-  {fdId:null,date:'2026-06-23',kick:'4:00 PM ET',g:'L',h:'England',a:'Ghana',v:'Gillette Stadium',c:'Foxborough, MA',tv:['FOX'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
-  {fdId:null,date:'2026-06-23',kick:'7:00 PM ET',g:'L',h:'Panama',a:'Croatia',v:'BMO Field',c:'Toronto',tv:['FOX'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
-  {fdId:null,date:'2026-06-23',kick:'10:00 PM ET',g:'K',h:'Colombia',a:'Congo DR',v:'Estadio Akron',c:'Guadalajara',tv:['FS1'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
-  // ── Matchday 4 (final group games, simultaneous) ──
-  {fdId:null,date:'2026-06-24',kick:'3:00 PM ET',g:'B',h:'Canada',a:'Switzerland',v:'BC Place',c:'Vancouver',tv:['FOX'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
-  {fdId:null,date:'2026-06-24',kick:'3:00 PM ET',g:'B',h:'Qatar',a:'Bosnia and Herzegovina',v:'Hard Rock Stadium',c:'Miami, FL',tv:['FS1'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
-  {fdId:null,date:'2026-06-24',kick:'6:00 PM ET',g:'A',h:'South Africa',a:'South Korea',v:'NRG Stadium',c:'Houston, TX',tv:['FOX'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
-  {fdId:null,date:'2026-06-24',kick:'6:00 PM ET',g:'A',h:'Mexico',a:'Czechia',v:'Estadio BBVA',c:'Monterrey',tv:['FS1'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
-  {fdId:null,date:'2026-06-25',kick:'3:00 PM ET',g:'G',h:'Belgium',a:'Egypt',v:'BC Place',c:'Vancouver',tv:['FOX'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:'1-1',st:'ft'},
-  {fdId:null,date:'2026-06-25',kick:'3:00 PM ET',g:'G',h:'IR Iran',a:'New Zealand',v:'Lumen Field',c:'Seattle, WA',tv:['FS1'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:'2-2',st:'ft'},
-  {fdId:null,date:'2026-06-25',kick:'6:00 PM ET',g:'H',h:'Uruguay',a:'Cabo Verde',v:'SoFi Stadium',c:'Inglewood, CA',tv:['FOX'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
-  {fdId:null,date:'2026-06-25',kick:'6:00 PM ET',g:'H',h:'Spain',a:'Uruguay',v:'Hard Rock Stadium',c:'Miami, FL',tv:['FS1'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
-  {fdId:null,date:'2026-06-26',kick:'3:00 PM ET',g:'D',h:'United States',a:'Türkiye',v:'SoFi Stadium',c:'Inglewood, CA',tv:['FOX'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
-  {fdId:null,date:'2026-06-26',kick:'3:00 PM ET',g:'D',h:'Paraguay',a:'Australia',v:'Mercedes-Benz Stadium',c:'Atlanta, GA',tv:['FS1'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
-  {fdId:null,date:'2026-06-26',kick:'6:00 PM ET',g:'C',h:'Scotland',a:'Brazil',v:'Hard Rock Stadium',c:'Miami, FL',tv:['FOX'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
-  {fdId:null,date:'2026-06-26',kick:'6:00 PM ET',g:'C',h:'Morocco',a:'Haiti',v:'Mercedes-Benz Stadium',c:'Atlanta, GA',tv:['FS1'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
-  {fdId:null,date:'2026-06-27',kick:'3:00 PM ET',g:'E',h:'Germany',a:'Ecuador',v:'MetLife Stadium',c:'East Rutherford, NJ',tv:['FOX'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
-  {fdId:null,date:'2026-06-27',kick:'3:00 PM ET',g:'E',h:'Curaçao',a:"Côte d'Ivoire",v:'NRG Stadium',c:'Houston, TX',tv:['FS1'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
-  {fdId:null,date:'2026-06-27',kick:'6:00 PM ET',g:'F',h:'Netherlands',a:'Sweden',v:'AT&T Stadium',c:'Arlington, TX',tv:['FOX'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
-  {fdId:null,date:'2026-06-27',kick:'6:00 PM ET',g:'F',h:'Tunisia',a:'Japan',v:"Levi's Stadium",c:'Santa Clara, CA',tv:['FS1'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
-  {fdId:null,date:'2026-06-27',kick:'8:00 PM ET',g:'I',h:'France',a:'Norway',v:'Gillette Stadium',c:'Foxborough, MA',tv:['FOX'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
-  {fdId:null,date:'2026-06-27',kick:'8:00 PM ET',g:'I',h:'Senegal',a:'Iraq',v:'Arrowhead Stadium',c:'Kansas City, MO',tv:['FS1'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
-  {fdId:null,date:'2026-06-27',kick:'11:00 PM ET',g:'J',h:'Argentina',a:'Jordan',v:'Mercedes-Benz Stadium',c:'Atlanta, GA',tv:['FOX'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
-  {fdId:null,date:'2026-06-27',kick:'11:00 PM ET',g:'J',h:'Algeria',a:'Austria',v:'SoFi Stadium',c:'Inglewood, CA',tv:['FS1'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
-  {fdId:null,date:'2026-06-28',kick:'3:00 PM ET',g:'K',h:'Portugal',a:'Colombia',v:'Lincoln Financial Field',c:'Philadelphia, PA',tv:['FOX'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
-  {fdId:null,date:'2026-06-28',kick:'3:00 PM ET',g:'K',h:'Uzbekistan',a:'Congo DR',v:'BMO Field',c:'Toronto',tv:['FS1'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
-  {fdId:null,date:'2026-06-28',kick:'6:00 PM ET',g:'L',h:'England',a:'Panama',v:'Hard Rock Stadium',c:'Miami, FL',tv:['FOX'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
-  {fdId:null,date:'2026-06-28',kick:'6:00 PM ET',g:'L',h:'Croatia',a:'Ghana',v:'MetLife Stadium',c:'East Rutherford, NJ',tv:['FS1'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
+  // ── GROUP A ──
+  {date:'2026-06-11',kick:'3:00 PM ET',g:'A',h:'Mexico',a:'South Africa',v:'Estadio Azteca',c:'Mexico City',tv:['FOX','Tubi'],tvs:['Telemundo'],str:['FOX One'],sc:'2-0',st:'ft'},
+  {date:'2026-06-11',kick:'10:00 PM ET',g:'A',h:'South Korea',a:'Czechia',v:'Estadio Akron',c:'Guadalajara',tv:['FS1'],tvs:['Telemundo'],str:['FOX One'],sc:'2-1',st:'ft'},
+  {date:'2026-06-18',kick:'12:00 PM ET',g:'A',h:'Czechia',a:'South Africa',v:'Mercedes-Benz Stadium',c:'Atlanta, GA',tv:['FOX'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
+  {date:'2026-06-18',kick:'9:00 PM ET',g:'A',h:'Mexico',a:'South Korea',v:'Estadio Akron',c:'Guadalajara',tv:['FS1'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
+  {date:'2026-06-24',kick:'6:00 PM ET',g:'A',h:'South Africa',a:'South Korea',v:'NRG Stadium',c:'Houston, TX',tv:['FOX'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
+  {date:'2026-06-24',kick:'6:00 PM ET',g:'A',h:'Mexico',a:'Czechia',v:'Estadio BBVA',c:'Monterrey',tv:['FS1'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
+
+  // ── GROUP B ──
+  {date:'2026-06-12',kick:'3:00 PM ET',g:'B',h:'Canada',a:'Bosnia and Herzegovina',v:'BMO Field',c:'Toronto',tv:['FOX'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:'1-1',st:'ft'},
+  {date:'2026-06-12',kick:'9:00 PM ET',g:'B',h:'Qatar',a:'Switzerland',v:"Levi's Stadium",c:'Santa Clara, CA',tv:['FS1'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:'1-3',st:'ft'},
+  {date:'2026-06-18',kick:'3:00 PM ET',g:'B',h:'Switzerland',a:'Bosnia and Herzegovina',v:'SoFi Stadium',c:'Inglewood, CA',tv:['FOX'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
+  {date:'2026-06-18',kick:'6:00 PM ET',g:'B',h:'Canada',a:'Qatar',v:'BC Place',c:'Vancouver',tv:['FS1'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
+  {date:'2026-06-24',kick:'3:00 PM ET',g:'B',h:'Switzerland',a:'Canada',v:'BC Place',c:'Vancouver',tv:['FOX'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
+  {date:'2026-06-24',kick:'3:00 PM ET',g:'B',h:'Bosnia and Herzegovina',a:'Qatar',v:'Lumen Field',c:'Seattle, WA',tv:['FS1'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
+
+  // ── GROUP C ──
+  {date:'2026-06-13',kick:'3:00 PM ET',g:'C',h:'Brazil',a:'Morocco',v:'MetLife Stadium',c:'East Rutherford, NJ',tv:['FOX'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:'1-1',st:'ft'},
+  {date:'2026-06-13',kick:'9:00 PM ET',g:'C',h:'Haiti',a:'Scotland',v:'Gillette Stadium',c:'Foxborough, MA',tv:['FS1'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:'0-1',st:'ft'},
+  {date:'2026-06-19',kick:'6:00 PM ET',g:'C',h:'Scotland',a:'Morocco',v:'Gillette Stadium',c:'Foxborough, MA',tv:['FS1'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
+  {date:'2026-06-19',kick:'8:30 PM ET',g:'C',h:'Brazil',a:'Haiti',v:'Lincoln Financial Field',c:'Philadelphia, PA',tv:['FOX'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
+  {date:'2026-06-24',kick:'6:00 PM ET',g:'C',h:'Brazil',a:'Scotland',v:'Hard Rock Stadium',c:'Miami, FL',tv:['FOX'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
+  {date:'2026-06-24',kick:'6:00 PM ET',g:'C',h:'Morocco',a:'Haiti',v:'Mercedes-Benz Stadium',c:'Atlanta, GA',tv:['FS1'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
+
+  // ── GROUP D ──
+  {date:'2026-06-12',kick:'9:00 PM ET',g:'D',h:'United States',a:'Paraguay',v:'SoFi Stadium',c:'Inglewood, CA',tv:['FOX','Tubi'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:'4-1',st:'ft'},
+  {date:'2026-06-14',kick:'10:00 PM ET',g:'D',h:'Australia',a:'Türkiye',v:'BC Place',c:'Vancouver',tv:['FS1'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:'2-0',st:'ft'},
+  {date:'2026-06-19',kick:'3:00 PM ET',g:'D',h:'United States',a:'Australia',v:'Lumen Field',c:'Seattle, WA',tv:['FOX'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
+  {date:'2026-06-19',kick:'12:00 AM ET',g:'D',h:'Türkiye',a:'Paraguay',v:"Levi's Stadium",c:'Santa Clara, CA',tv:['FS1'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
+  {date:'2026-06-25',kick:'10:00 PM ET',g:'D',h:'United States',a:'Türkiye',v:'SoFi Stadium',c:'Inglewood, CA',tv:['FOX'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
+  {date:'2026-06-25',kick:'10:00 PM ET',g:'D',h:'Paraguay',a:'Australia',v:'Mercedes-Benz Stadium',c:'Atlanta, GA',tv:['FS1'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
+
+  // ── GROUP E ──
+  {date:'2026-06-14',kick:'1:00 PM ET',g:'E',h:'Germany',a:'Curaçao',v:'NRG Stadium',c:'Houston, TX',tv:['FOX'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:'7-1',st:'ft'},
+  {date:'2026-06-14',kick:'7:00 PM ET',g:'E',h:"Côte d'Ivoire",a:'Ecuador',v:'Lincoln Financial Field',c:'Philadelphia, PA',tv:['FS1'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:'1-0',st:'ft'},
+  {date:'2026-06-20',kick:'4:00 PM ET',g:'E',h:'Germany',a:"Côte d'Ivoire",v:'BMO Field',c:'Toronto',tv:['FOX'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
+  {date:'2026-06-20',kick:'8:00 PM ET',g:'E',h:'Ecuador',a:'Curaçao',v:'Arrowhead Stadium',c:'Kansas City, MO',tv:['FS1'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
+  {date:'2026-06-25',kick:'4:00 PM ET',g:'E',h:'Ecuador',a:'Germany',v:'MetLife Stadium',c:'East Rutherford, NJ',tv:['FOX'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
+  {date:'2026-06-25',kick:'4:00 PM ET',g:'E',h:'Curaçao',a:"Côte d'Ivoire",v:'Lincoln Financial Field',c:'Philadelphia, PA',tv:['FS1'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
+
+  // ── GROUP F ──
+  {date:'2026-06-14',kick:'4:00 PM ET',g:'F',h:'Netherlands',a:'Japan',v:'SoFi Stadium',c:'Inglewood, CA',tv:['FOX'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:'2-2',st:'ft'},
+  {date:'2026-06-14',kick:'10:00 PM ET',g:'F',h:'Sweden',a:'Tunisia',v:'Estadio BBVA',c:'Monterrey',tv:['FS1'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:'5-1',st:'ft'},
+  {date:'2026-06-20',kick:'1:00 PM ET',g:'F',h:'Netherlands',a:'Sweden',v:'NRG Stadium',c:'Houston, TX',tv:['FOX'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
+  {date:'2026-06-20',kick:'12:00 AM ET',g:'F',h:'Tunisia',a:'Japan',v:'Estadio BBVA',c:'Monterrey',tv:['FS1'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
+  {date:'2026-06-25',kick:'7:00 PM ET',g:'F',h:'Japan',a:'Sweden',v:'AT&T Stadium',c:'Arlington, TX',tv:['FS1'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
+  {date:'2026-06-25',kick:'7:00 PM ET',g:'F',h:'Tunisia',a:'Netherlands',v:'Arrowhead Stadium',c:'Kansas City, MO',tv:['FOX'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
+
+  // ── GROUP G ──
+  {date:'2026-06-15',kick:'4:00 PM ET',g:'G',h:'Belgium',a:'Egypt',v:'Lumen Field',c:'Seattle, WA',tv:['FOX'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:'1-1',st:'ft'},
+  {date:'2026-06-15',kick:'9:00 PM ET',g:'G',h:'IR Iran',a:'New Zealand',v:'SoFi Stadium',c:'Inglewood, CA',tv:['FS1'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:'2-2',st:'ft'},
+  {date:'2026-06-21',kick:'3:00 PM ET',g:'G',h:'Belgium',a:'IR Iran',v:'SoFi Stadium',c:'Inglewood, CA',tv:['FS1'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
+  {date:'2026-06-21',kick:'9:00 PM ET',g:'G',h:'New Zealand',a:'Egypt',v:'BC Place',c:'Vancouver',tv:['FS1'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
+  {date:'2026-06-26',kick:'11:00 PM ET',g:'G',h:'Egypt',a:'IR Iran',v:'Lumen Field',c:'Seattle, WA',tv:['FS1'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
+  {date:'2026-06-26',kick:'11:00 PM ET',g:'G',h:'New Zealand',a:'Belgium',v:'BC Place',c:'Vancouver',tv:['FOX'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
+
+  // ── GROUP H ──
+  {date:'2026-06-15',kick:'1:00 PM ET',g:'H',h:'Spain',a:'Cabo Verde',v:'Mercedes-Benz Stadium',c:'Atlanta, GA',tv:['FOX'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:'0-0',st:'ft'},
+  {date:'2026-06-15',kick:'6:00 PM ET',g:'H',h:'Saudi Arabia',a:'Uruguay',v:'Hard Rock Stadium',c:'Miami, FL',tv:['FOX'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:'1-1',st:'ft'},
+  {date:'2026-06-21',kick:'12:00 PM ET',g:'H',h:'Spain',a:'Saudi Arabia',v:'Mercedes-Benz Stadium',c:'Atlanta, GA',tv:['FOX'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
+  {date:'2026-06-21',kick:'6:00 PM ET',g:'H',h:'Uruguay',a:'Cabo Verde',v:'Hard Rock Stadium',c:'Miami, FL',tv:['FOX'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
+  {date:'2026-06-26',kick:'8:00 PM ET',g:'H',h:'Cabo Verde',a:'Saudi Arabia',v:'NRG Stadium',c:'Houston, TX',tv:['FS1'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
+  {date:'2026-06-26',kick:'8:00 PM ET',g:'H',h:'Uruguay',a:'Spain',v:'Estadio Akron',c:'Guadalajara',tv:['FOX'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
+
+  // ── GROUP I ──
+  {date:'2026-06-16',kick:'3:00 PM ET',g:'I',h:'France',a:'Senegal',v:'MetLife Stadium',c:'East Rutherford, NJ',tv:['FOX'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
+  {date:'2026-06-16',kick:'6:00 PM ET',g:'I',h:'Iraq',a:'Norway',v:'Gillette Stadium',c:'Foxborough, MA',tv:['FOX'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
+  {date:'2026-06-22',kick:'5:00 PM ET',g:'I',h:'France',a:'Iraq',v:'Lincoln Financial Field',c:'Philadelphia, PA',tv:['FOX'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
+  {date:'2026-06-22',kick:'8:00 PM ET',g:'I',h:'Norway',a:'Senegal',v:'MetLife Stadium',c:'East Rutherford, NJ',tv:['FOX'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
+  {date:'2026-06-26',kick:'3:00 PM ET',g:'I',h:'Norway',a:'France',v:'Gillette Stadium',c:'Foxborough, MA',tv:['FOX'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
+  {date:'2026-06-26',kick:'3:00 PM ET',g:'I',h:'Senegal',a:'Iraq',v:'BMO Field',c:'Toronto',tv:['FS1'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
+
+  // ── GROUP J ──
+  {date:'2026-06-16',kick:'9:00 PM ET',g:'J',h:'Argentina',a:'Algeria',v:'Arrowhead Stadium',c:'Kansas City, MO',tv:['FOX'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
+  {date:'2026-06-16',kick:'12:00 AM ET',g:'J',h:'Austria',a:'Jordan',v:"Levi's Stadium",c:'Santa Clara, CA',tv:['FS1'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
+  {date:'2026-06-22',kick:'1:00 PM ET',g:'J',h:'Argentina',a:'Austria',v:'AT&T Stadium',c:'Arlington, TX',tv:['FOX'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
+  {date:'2026-06-22',kick:'11:00 PM ET',g:'J',h:'Jordan',a:'Algeria',v:"Levi's Stadium",c:'Santa Clara, CA',tv:['FS1'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
+  {date:'2026-06-27',kick:'10:00 PM ET',g:'J',h:'Algeria',a:'Austria',v:'Arrowhead Stadium',c:'Kansas City, MO',tv:['FS1'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
+  {date:'2026-06-27',kick:'10:00 PM ET',g:'J',h:'Jordan',a:'Argentina',v:'AT&T Stadium',c:'Arlington, TX',tv:['FOX'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
+
+  // ── GROUP K ──
+  {date:'2026-06-17',kick:'1:00 PM ET',g:'K',h:'Portugal',a:'Congo DR',v:'NRG Stadium',c:'Houston, TX',tv:['FOX'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
+  {date:'2026-06-17',kick:'10:00 PM ET',g:'K',h:'Uzbekistan',a:'Colombia',v:'Estadio Akron',c:'Guadalajara',tv:['FS1'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
+  {date:'2026-06-23',kick:'1:00 PM ET',g:'K',h:'Portugal',a:'Uzbekistan',v:'NRG Stadium',c:'Houston, TX',tv:['FOX'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
+  {date:'2026-06-23',kick:'10:00 PM ET',g:'K',h:'Colombia',a:'Congo DR',v:'Estadio Akron',c:'Guadalajara',tv:['FS1'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
+  {date:'2026-06-27',kick:'7:30 PM ET',g:'K',h:'Colombia',a:'Portugal',v:'Hard Rock Stadium',c:'Miami, FL',tv:['FOX'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
+  {date:'2026-06-27',kick:'7:30 PM ET',g:'K',h:'Congo DR',a:'Uzbekistan',v:'Mercedes-Benz Stadium',c:'Atlanta, GA',tv:['FS1'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
+
+  // ── GROUP L ──
+  {date:'2026-06-17',kick:'4:00 PM ET',g:'L',h:'England',a:'Croatia',v:'AT&T Stadium',c:'Arlington, TX',tv:['FOX'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
+  {date:'2026-06-17',kick:'7:00 PM ET',g:'L',h:'Ghana',a:'Panama',v:'BMO Field',c:'Toronto',tv:['FS1'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
+  {date:'2026-06-23',kick:'4:00 PM ET',g:'L',h:'England',a:'Ghana',v:'Gillette Stadium',c:'Foxborough, MA',tv:['FOX'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
+  {date:'2026-06-23',kick:'7:00 PM ET',g:'L',h:'Panama',a:'Croatia',v:'BMO Field',c:'Toronto',tv:['FOX'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
+  {date:'2026-06-27',kick:'5:00 PM ET',g:'L',h:'Panama',a:'England',v:'MetLife Stadium',c:'East Rutherford, NJ',tv:['FOX'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
+  {date:'2026-06-27',kick:'5:00 PM ET',g:'L',h:'Croatia',a:'Ghana',v:'Lincoln Financial Field',c:'Philadelphia, PA',tv:['FS1'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
 ];
 
 // ═══════════════════════════════════════════════════════
@@ -577,13 +595,9 @@ async function fetchScores(manual = false) {
     }
 
     // ── Status summary ──
-    const unique    = all.length;
     const liveNow   = all.filter(m => fdToSt(m.status) === 'live').length;
     const htNow     = all.filter(m => fdToSt(m.status) === 'ht').length;
     const completed = all.filter(m => fdToSt(m.status) === 'ft').length;
-    const todayStr_ = todayET();
-    const todayGames = all.filter(m => (m.utcDate||'').startsWith(todayStr_) ||
-      MATCHES.find(lm => lm.h === normTeam(m.homeTeam?.name||'') && lm.date === todayStr_));
 
     // ── Update live indicator ──
     dot.className = liveNow > 0 ? 'ldot live' : 'ldot';
@@ -601,8 +615,14 @@ async function fetchScores(manual = false) {
 
   } catch(err) {
     dot.className = 'ldot err';
-    stat.textContent = `⚠ ${err.message}`;
-    console.error('[WC2026]', err);
+    // Show friendly message, not raw error
+    const msg = err.message || 'Connection error';
+    if (msg.includes('Failed to fetch') || msg.includes('NetworkError')) {
+      stat.textContent = 'No connection — showing cached data';
+    } else {
+      stat.textContent = `⚠ ${msg.slice(0, 55)}`;
+    }
+    console.warn('[WC2026] Score fetch failed:', msg);
     syncAllViews(); // still re-render with whatever we have
   }
 
@@ -614,10 +634,15 @@ async function fetchScores(manual = false) {
 
 // ── Re-render every open view with latest LIVE data ──
 function syncAllViews() {
-  renderToday();
-  // Always re-render groups so scores show immediately when tab opened
+  // Re-render Today (or team view within Today)
+  if (_todayTeam) {
+    document.getElementById('v-today').innerHTML = buildTeamHTML(_todayTeam, 'closeTodayTeam()');
+  } else {
+    renderToday();
+  }
+  // Re-render Groups (whichever sub-state: grid / group / team)
   renderGroups();
-  // If user is looking at a team schedule, refresh it too
+  // Re-render Teams search result
   if (currentView === 'search' && currentTeam) showTeam(currentTeam, false);
 }
 
@@ -662,9 +687,10 @@ function matchCard(m, tapTeams) {
   const tvs = m.tvs.map(x => `<span class="chip cs">${x}</span>`).join('');
   const str = m.str.map(x => `<span class="chip cst">${x}</span>`).join('');
 
-  const tapH = tapTeams ? `onclick="teamFromCard('${m.h.replace(/'/g,"\\'")}')` : '';
-  const tapA = tapTeams ? `onclick="teamFromCard('${m.a.replace(/'/g,"\\'")}')` : '';
-  const hint = tapTeams ? `<span class="mc-tap">tap for schedule</span>` : '';
+  // Every team is always tappable — opens overlay from any tab
+  const hClick = `onclick="showTeamOverlay('${m.h.replace(/'/g,"\\'")}',event)"`;
+  const aClick = `onclick="showTeamOverlay('${m.a.replace(/'/g,"\\'")}',event)"`;
+  const hint   = tapTeams ? `<span class="mc-tap">tap for schedule</span>` : '';
 
   return `<div class="mc${isUSA ? ' usmnt' : ''}${st === 'live' ? ' is-live' : ''}">
   <div class="mc-top">
@@ -672,17 +698,18 @@ function matchCard(m, tapTeams) {
     <span class="bdg ${bdgCls}">${bdgTxt}</span>
   </div>
   <div class="mc-body">
-    <div class="mc-team" ${tapH}">
+    <div class="mc-team" ${hClick}>
       <span class="mc-flag">${FLAGS[m.h]||'🏳️'}</span>
       <span class="mc-name">${m.h}</span>${hint}
     </div>
     <div class="mc-mid">${midHTML}</div>
-    <div class="mc-team" ${tapA}">
+    <div class="mc-team" ${aClick}>
       <span class="mc-flag">${FLAGS[m.a]||'🏳️'}</span>
       <span class="mc-name">${m.a}</span>${hint}
     </div>
   </div>
   <div class="mc-foot">
+    <div class="mc-venue"><i class="ti ti-calendar"></i>${fmtMatchDate(m.date)}</div>
     <div class="mc-venue"><i class="ti ti-map-pin"></i>${m.v} · ${m.c}</div>
     <div class="mc-watch">
       <span class="wl">English:</span>${tv}
@@ -693,21 +720,117 @@ function matchCard(m, tapTeams) {
 </div>`;
 }
 
-function teamFromCard(t) { go('search'); pickTeam(t); }
+// ── buildTeamHTML: shared by Today inline view, Teams tab, Groups tab ──
+function buildTeamHTML(team, backFn) {
+  const g  = teamGroup(team);
+  const ms = MATCHES.filter(m => m.h === team || m.a === team);
+  const {sorted, stats} = calcStandings(g);
+
+  let html = `
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+      <button class="back" onclick="${backFn}" style="margin-bottom:0">
+        <i class="ti ti-arrow-left"></i> Back
+      </button>
+      <span style="font-size:14px;font-weight:600;color:var(--tx)">
+        ${FLAGS[team]||'🏳️'} ${team}
+      </span>
+    </div>
+    <div class="sec-lbl">Group ${g} Standings</div>
+    <div class="stbl-wrap" style="margin-bottom:18px">
+      <table class="stbl">
+        <thead><tr>
+          <th></th><th>Team</th>
+          <th>P</th><th>W</th><th>D</th><th>L</th><th>GD</th><th>Pts</th>
+        </tr></thead>
+        <tbody>`;
+
+  sorted.forEach((t, i) => {
+    const s     = stats[t];
+    const gdStr = s.gd > 0 ? `+${s.gd}` : `${s.gd}`;
+    const isSel = t === team;
+    const cls   = i < 2 ? 'adv' : i === 2 ? 'maybe' : '';
+    html += `<tr class="${cls}" style="${isSel ? 'background:var(--bg2)' : ''}">
+      <td class="stbl-pos">${i+1}</td>
+      <td>
+        <span class="stbl-flag">${FLAGS[t]||'🏳️'}</span>
+        <span class="stbl-name" style="${isSel ? 'font-weight:700' : ''}"
+              onclick="showTeamOverlay('${t.replace(/'/g,"\'")}',event)">${t}</span>
+      </td>
+      <td>${s.p}</td><td>${s.w}</td><td>${s.d}</td><td>${s.l}</td>
+      <td>${s.p > 0 ? gdStr : '—'}</td>
+      <td style="font-weight:${s.pts>0?'700':'400'};color:${s.pts>=3?'#16a34a':'var(--tx)'}">${s.pts}</td>
+    </tr>`;
+  });
+
+  html += `</tbody></table>
+      <div class="stbl-key">
+        <span class="adv">Advances</span>
+        <span class="maybe">Possible (best 3rd)</span>
+      </div>
+    </div>
+    <div class="sec-lbl">${team} — All Matches</div>
+    ${ms.map(m => matchCard(m, false)).join('')}`;
+
+  return html;
+}
+
+// Called from any match card team tap
+function showTeamOverlay(team, e) {
+  if (e) e.stopPropagation();
+
+  if (currentView === 'today') {
+    // Render inline in Today tab
+    _todayTeam = team;
+    document.getElementById('v-today').innerHTML =
+      buildTeamHTML(team, 'closeTodayTeam()');
+    window.scrollTo({top: 0, behavior: 'smooth'});
+
+  } else if (currentView === 'groups') {
+    // Render inline in Groups tab via selGroupTeam
+    selGroupTeam(team, teamGroup(team));
+
+  } else if (currentView === 'search') {
+    // Render in Teams tab
+    pickTeam(team);
+  }
+}
+
+let _todayTeam = null;
+function closeTodayTeam() {
+  _todayTeam = null;
+  renderToday();
+  window.scrollTo({top: 0, behavior: 'smooth'});
+}
+
+function goTeam(t) { showTeamOverlay(t, null); }
+function teamFromCard(t) { showTeamOverlay(t, null); }
 
 // ═══════════════════════════════════════════════════════
 // TODAY VIEW
 // ═══════════════════════════════════════════════════════
+function yesterdayET() {
+  const d = nowET();
+  d.setDate(d.getDate() - 1);
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+
 function renderToday() {
   const el = document.getElementById('v-today');
   const today = todayET();
+  const yesterday = yesterdayET();
+  const hourET = nowET().getHours(); // 0-23 in ET
 
   // Hero date in ET
   const d = nowET();
   document.getElementById('hero-date').textContent =
     d.toLocaleDateString('en-US', {weekday:'long', month:'long', day:'numeric', year:'numeric'});
 
-  const todayMs = MATCHES.filter(m => m.date === today);
+  // Include today's matches. If it's before 2 AM ET, also show yesterday's 
+  // late matches (midnight kickoffs that started the previous evening)
+  const lateYesterday = hourET < 2
+    ? MATCHES.filter(m => m.date === yesterday && m.kick.startsWith('12:00 AM'))
+    : [];
+  const todayMs = [...lateYesterday, ...MATCHES.filter(m => m.date === today)];
 
   if (!todayMs.length) {
     // Find next match day
@@ -813,42 +936,130 @@ function clearSearch() {
 // GROUPS VIEW
 // ═══════════════════════════════════════════════════════
 let selGroup = null;
+let selTeam  = null; // team selected within Groups tab
 
 function renderGroups() {
   const el = document.getElementById('v-groups');
   let html = '<div class="gtabs">';
   Object.keys(GROUPS).forEach(g => {
-    html += `<button class="gtab${g === selGroup ? ' on' : ''}" onclick="selGrp('${g}')">Grp ${g}</button>`;
+    html += `<button class="gtab${g === selGroup ? ' on' : ''}" onclick="selGrp('${g}')">${g}</button>`;
   });
   html += '</div><div id="grp-body"></div>';
   el.innerHTML = html;
 
-  if (selGroup) {
-    renderGroupBody(selGroup);
-  } else {
-    // Show all group cards
-    let grid = '<div class="g-grid">';
-    Object.keys(GROUPS).forEach(g => {
-      grid += `<div class="gcard" onclick="selGrp('${g}')">
-        <div class="gcard-lbl">Group ${g}</div>`;
-      GROUPS[g].forEach(t => {
-        grid += `<div class="gct" onclick="event.stopPropagation();goTeam('${t.replace(/'/g,"\\'")}')">
-          <span class="gctf">${FLAGS[t]||'🏳️'}</span>
-          <span class="gctn">${t}</span>
-        </div>`;
-      });
-      grid += '</div>';
-    });
-    grid += '</div>';
-    document.getElementById('grp-body').innerHTML = grid;
-  }
+  if (selTeam)        renderGroupTeam(selTeam);
+  else if (selGroup)  renderGroupBody(selGroup);
+  else                renderGroupGrid();
 }
 
-function selGrp(g) { selGroup = g; renderGroups(); }
+function renderGroupGrid() {
+  let grid = '<div class="g-grid">';
+  Object.keys(GROUPS).forEach(g => {
+    const {sorted, stats} = calcStandings(g);
+    grid += `<div class="gcard" onclick="selGrp('${g}')"><div class="gcard-lbl">Group ${g}</div>`;
+    sorted.forEach(t => {
+      const s = stats[t];
+      const ptsStr = s.p > 0
+        ? `<span style="font-size:10px;color:var(--tx3);margin-left:auto;font-family:monospace">${s.pts}pts</span>`
+        : '';
+      grid += `<div class="gct" onclick="event.stopPropagation();selGroupTeam('${t.replace(/'/g,"\'")}','${g}')">
+        <span class="gctf">${FLAGS[t]||'🏳️'}</span>
+        <span class="gctn">${t}</span>${ptsStr}
+      </div>`;
+    });
+    grid += '</div>';
+  });
+  grid += '</div>';
+  document.getElementById('grp-body').innerHTML = grid;
+}
 
-function renderGroupBody(g) {
+function selGrp(g) { selGroup = g; selTeam = null; renderGroups(); }
+function selGroupTeam(team, g) { selGroup = g; selTeam = team; renderGroups(); }
+
+function renderGroupTeam(team) {
+  const g  = teamGroup(team);
+  const ms = MATCHES.filter(m => m.h === team || m.a === team);
+  const {sorted, stats} = calcStandings(g);
+
+  let html = `
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+      <button class="back" onclick="selTeam=null;renderGroups()" style="margin-bottom:0">
+        <i class="ti ti-arrow-left"></i> Group ${g}
+      </button>
+      <span style="font-size:14px;font-weight:600;color:var(--tx)">${FLAGS[team]||''} ${team}</span>
+    </div>
+    <div class="stbl-wrap" style="margin-bottom:14px">
+      <table class="stbl">
+        <thead><tr><th></th><th>Team</th><th>P</th><th>W</th><th>D</th><th>L</th><th>GD</th><th>Pts</th></tr></thead>
+        <tbody>`;
+
+  sorted.forEach((t, i) => {
+    const s = stats[t];
+    const gdStr = s.gd > 0 ? `+${s.gd}` : `${s.gd}`;
+    const isSel = t === team;
+    const cls = i < 2 ? 'adv' : i === 2 ? 'maybe' : '';
+    html += `<tr class="${cls}" style="${isSel ? 'background:var(--bg2)' : ''}">
+      <td class="stbl-pos">${i+1}</td>
+      <td><span class="stbl-flag">${FLAGS[t]||'🏳️'}</span>
+          <span class="stbl-name" style="${isSel?'font-weight:700':''}"
+                onclick="showTeamOverlay('${t.replace(/'/g,"\'")}',event)">${t}</span></td>
+      <td>${s.p}</td><td>${s.w}</td><td>${s.d}</td><td>${s.l}</td>
+      <td>${s.p > 0 ? gdStr : '—'}</td>
+      <td style="font-weight:${s.pts>0?'700':'400'};color:${s.pts>=3?'#16a34a':'var(--tx)'}">${s.pts}</td>
+    </tr>`;
+  });
+
+  html += `</tbody></table>
+      <div class="stbl-key"><span class="adv">Advances</span><span class="maybe">Possible (best 3rd)</span></div>
+    </div>
+    <div class="sec-lbl">${team} — Group Stage Matches</div>
+    ${ms.map(m => matchCard(m, false)).join('')}`;
+
+  document.getElementById('grp-body').innerHTML = html;
+}
+
+// ─── Calculate live standings for a group ───────────────────────
+function calcStandings(g) {
   const teams = GROUPS[g];
   const ms    = MATCHES.filter(m => m.g === g);
+  const stats = {};
+  teams.forEach(t => { stats[t] = {p:0,w:0,d:0,l:0,gf:0,ga:0,gd:0,pts:0}; });
+
+  ms.forEach(m => {
+    const lv = getLive(m);
+    const sc = lv.sc || m.sc;
+    const st = lv.st || m.st;
+    if (!sc || st === 'sched') return;
+    const parts = sc.split('-');
+    if (parts.length !== 2) return;
+    const hg = parseInt(parts[0], 10);
+    const ag = parseInt(parts[1], 10);
+    if (isNaN(hg) || isNaN(ag)) return;
+    if (!stats[m.h] || !stats[m.a]) return;
+
+    stats[m.h].p++; stats[m.a].p++;
+    stats[m.h].gf += hg; stats[m.h].ga += ag;
+    stats[m.a].gf += ag; stats[m.a].ga += hg;
+
+    if (hg > ag)      { stats[m.h].w++; stats[m.h].pts+=3; stats[m.a].l++; }
+    else if (hg < ag) { stats[m.a].w++; stats[m.a].pts+=3; stats[m.h].l++; }
+    else              { stats[m.h].d++; stats[m.h].pts++; stats[m.a].d++; stats[m.a].pts++; }
+  });
+
+  teams.forEach(t => { stats[t].gd = stats[t].gf - stats[t].ga; });
+
+  const sorted = [...teams].sort((a,b) => {
+    if (stats[b].pts !== stats[a].pts) return stats[b].pts - stats[a].pts;
+    if (stats[b].gd  !== stats[a].gd)  return stats[b].gd  - stats[a].gd;
+    if (stats[b].gf  !== stats[a].gf)  return stats[b].gf  - stats[a].gf;
+    return a.localeCompare(b);
+  });
+  return {sorted, stats};
+}
+
+function renderGroupBody(g) {
+  const ms = MATCHES.filter(m => m.g === g);
+  const {sorted, stats} = calcStandings(g);
 
   let html = `
     <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
@@ -859,26 +1070,46 @@ function renderGroupBody(g) {
     </div>
     <div class="stbl-wrap">
       <table class="stbl">
-        <thead><tr><th></th><th>Team</th><th>P</th><th>W</th><th>D</th><th>L</th><th>GD</th><th>Pts</th></tr></thead>
+        <thead><tr>
+          <th></th><th>Team</th>
+          <th title="Played">P</th>
+          <th title="Won">W</th>
+          <th title="Drawn">D</th>
+          <th title="Lost">L</th>
+          <th title="Goals For">GF</th>
+          <th title="Goals Against">GA</th>
+          <th title="Goal Difference">GD</th>
+          <th title="Points">Pts</th>
+        </tr></thead>
         <tbody>`;
 
-  teams.forEach((t, i) => {
-    const cls = i < 2 ? 'adv' : '';
+  sorted.forEach((t, i) => {
+    const s   = stats[t];
+    const cls = i < 2 ? 'adv' : i === 2 ? 'maybe' : '';
+    const gdStr = s.gd > 0 ? `+${s.gd}` : `${s.gd}`;
+    const ptsColor = s.pts >= 3 ? 'color:#16a34a;font-weight:700' : s.pts > 0 ? 'color:var(--tx);font-weight:600' : 'color:var(--tx3)';
     html += `<tr class="${cls}">
       <td class="stbl-pos">${i+1}</td>
       <td><span class="stbl-flag">${FLAGS[t]||'🏳️'}</span>
-          <span class="stbl-name" onclick="goTeam('${t.replace(/'/g,"\\'")}'">${t}</span></td>
-      <td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td>
+          <span class="stbl-name" onclick="showTeamOverlay('${t.replace(/'/g,"\'")}',event)">${t}</span></td>
+      <td>${s.p}</td>
+      <td>${s.w}</td>
+      <td>${s.d}</td>
+      <td>${s.l}</td>
+      <td>${s.gf}</td>
+      <td>${s.ga}</td>
+      <td>${s.p > 0 ? gdStr : '—'}</td>
+      <td style="${ptsColor}">${s.pts}</td>
     </tr>`;
   });
 
   html += `</tbody></table>
       <div class="stbl-key">
         <span class="adv">Advances to Round of 32</span>
-        <span class="maybe">Possible (best 3rd)</span>
+        <span class="maybe">Possible (best 3rd place)</span>
       </div>
     </div>
-    <div class="sec-lbl">Group ${g} Schedule</div>
+    <div class="sec-lbl" style="margin-top:14px">Group ${g} — All Matches</div>
     ${ms.map(m => matchCard(m, false)).join('')}`;
 
   document.getElementById('grp-body').innerHTML = html;
@@ -967,12 +1198,17 @@ self.addEventListener('activate',e=>{
   self.clients.claim();
 });
 self.addEventListener('fetch',e=>{
-  if(e.request.url.includes('api.')&&e.request.url.includes('football-data.org'))return;
-  e.respondWith(fetch(e.request).then(r=>{
-    const rc=r.clone();
-    caches.open(C).then(c=>c.put(e.request,rc));
-    return r;
-  }).catch(()=>caches.match(e.request)));
+  // Skip non-GET and API calls entirely — let them go direct
+  if(e.request.method!=='GET') return;
+  if(e.request.url.includes('football-data.org')) return;
+  if(e.request.url.includes('api.anthropic.com')) return;
+  // Network-first with cache fallback for everything else
+  e.respondWith(
+    fetch(e.request).then(r=>{
+      if(r.ok){const rc=r.clone();caches.open(C).then(c=>c.put(e.request,rc));}
+      return r;
+    }).catch(()=>caches.match(e.request).then(c=>c||new Response('Offline',{status:503})))
+  );
 });`;
     const swBlob = new Blob([sw], {type:'text/javascript'});
     navigator.serviceWorker.register(URL.createObjectURL(swBlob)).catch(()=>{});
@@ -986,17 +1222,14 @@ self.addEventListener('fetch',e=>{
     // Could show a custom install button here
   });
 
-  // iOS instructions
+  // iOS install tip
   const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent) && !window.MSStream;
   if (isIOS && !navigator.standalone) {
-    const notice = document.getElementById('token-notice');
-    // Only show iOS tip if token is already set
-    if (API_TOKEN !== 'YOUR_TOKEN_HERE') {
-      const ios = document.createElement('div');
-      ios.style.cssText = 'background:#1a3a28;border:0.5px solid rgba(110,231,183,.2);border-radius:12px;padding:10px 14px;margin-bottom:12px;font-size:12px;color:rgba(255,255,255,.75);line-height:1.5';
-      ios.innerHTML = '📲 <strong style="color:#6ee7b7">Install as app:</strong> tap the Share button in Safari → "Add to Home Screen"';
-      document.querySelector('.app').insertBefore(ios, notice.nextSibling);
-    }
+    const ios = document.createElement('div');
+    ios.style.cssText = 'background:#1a3a28;border:0.5px solid rgba(110,231,183,.2);border-radius:12px;padding:10px 14px;margin-bottom:12px;font-size:12px;color:rgba(255,255,255,.75);line-height:1.5';
+    ios.innerHTML = '📲 <strong style="color:#6ee7b7">Install as app:</strong> Tap the Share button in Safari → "Add to Home Screen"';
+    const app = document.querySelector('.app');
+    app.insertBefore(ios, app.firstChild);
   }
 })();
 
