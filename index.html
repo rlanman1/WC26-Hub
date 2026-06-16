@@ -370,21 +370,22 @@ const teamGroup = t => Object.keys(GROUPS).find(g => GROUPS[g].includes(t)) || '
 const MATCHES = [
   // ── Matchday 1 ──
   {fdId:null,date:'2026-06-11',kick:'3:00 PM ET',g:'A',h:'Mexico',a:'South Africa',v:'Estadio Azteca',c:'Mexico City',tv:['FOX','Tubi'],tvs:['Telemundo'],str:['FOX One'],sc:'2-0',st:'ft'},
-  {fdId:null,date:'2026-06-11',kick:'10:00 PM ET',g:'A',h:'South Korea',a:'Czechia',v:'Estadio Akron',c:'Guadalajara',tv:['FS1'],tvs:['Telemundo'],str:['FOX One'],sc:'1-1',st:'ft'},
+  {fdId:null,date:'2026-06-11',kick:'10:00 PM ET',g:'A',h:'South Korea',a:'Czechia',v:'Estadio Akron',c:'Guadalajara',tv:['FS1'],tvs:['Telemundo'],str:['FOX One'],sc:'2-1',st:'ft'},
   {fdId:null,date:'2026-06-12',kick:'3:00 PM ET',g:'B',h:'Canada',a:'Bosnia and Herzegovina',v:'BMO Field',c:'Toronto',tv:['FOX'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:'1-1',st:'ft'},
-  {fdId:null,date:'2026-06-12',kick:'9:00 PM ET',g:'D',h:'United States',a:'Paraguay',v:'SoFi Stadium',c:'Inglewood, CA',tv:['FOX','Tubi'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
+  {fdId:null,date:'2026-06-12',kick:'9:00 PM ET',g:'D',h:'United States',a:'Paraguay',v:'SoFi Stadium',c:'Inglewood, CA',tv:['FOX','Tubi'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:'4-1',st:'ft'},
   // ── Matchday 2 ──
-  {fdId:null,date:'2026-06-13',kick:'3:00 PM ET',g:'C',h:'Brazil',a:'Morocco',v:'MetLife Stadium',c:'East Rutherford, NJ',tv:['FOX'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
-  {fdId:null,date:'2026-06-13',kick:'6:00 PM ET',g:'B',h:'Qatar',a:'Switzerland',v:"Levi's Stadium",c:'Santa Clara, CA',tv:['FS1'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
-  {fdId:null,date:'2026-06-13',kick:'9:00 PM ET',g:'C',h:'Haiti',a:'Scotland',v:'Gillette Stadium',c:'Foxborough, MA',tv:['FS1'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
-  {fdId:null,date:'2026-06-14',kick:'1:00 PM ET',g:'E',h:'Germany',a:'Curaçao',v:'AT&T Stadium',c:'Arlington, TX',tv:['FOX'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
-  {fdId:null,date:'2026-06-14',kick:'4:00 PM ET',g:'F',h:'Netherlands',a:'Japan',v:'SoFi Stadium',c:'Inglewood, CA',tv:['FOX'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
-  {fdId:null,date:'2026-06-14',kick:'7:00 PM ET',g:'E',h:"Côte d'Ivoire",a:'Ecuador',v:'NRG Stadium',c:'Houston, TX',tv:['FS1'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
-  {fdId:null,date:'2026-06-14',kick:'10:00 PM ET',g:'F',h:'Sweden',a:'Tunisia',v:'BC Place',c:'Vancouver',tv:['FS1'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
-  {fdId:null,date:'2026-06-15',kick:'1:00 PM ET',g:'H',h:'Spain',a:'Cabo Verde',v:'Mercedes-Benz Stadium',c:'Atlanta, GA',tv:['FOX'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
-  {fdId:null,date:'2026-06-15',kick:'4:00 PM ET',g:'G',h:'Belgium',a:'New Zealand',v:'Hard Rock Stadium',c:'Miami, FL',tv:['FOX'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
-  {fdId:null,date:'2026-06-15',kick:'6:00 PM ET',g:'G',h:'Egypt',a:'IR Iran',v:'Lumen Field',c:'Seattle, WA',tv:['FS1'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
-  {fdId:null,date:'2026-06-15',kick:'6:00 PM ET',g:'H',h:'Saudi Arabia',a:'Uruguay',v:'Hard Rock Stadium',c:'Miami, FL',tv:['FOX'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
+  {fdId:null,date:'2026-06-13',kick:'3:00 PM ET',g:'C',h:'Brazil',a:'Morocco',v:'MetLife Stadium',c:'East Rutherford, NJ',tv:['FOX'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:'1-1',st:'ft'},
+  {fdId:null,date:'2026-06-13',kick:'6:00 PM ET',g:'B',h:'Qatar',a:'Switzerland',v:"Levi's Stadium",c:'Santa Clara, CA',tv:['FS1'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:'1-1',st:'ft'},
+  {fdId:null,date:'2026-06-13',kick:'9:00 PM ET',g:'C',h:'Haiti',a:'Scotland',v:'Gillette Stadium',c:'Foxborough, MA',tv:['FS1'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:'0-1',st:'ft'},
+  {fdId:null,date:'2026-06-14',kick:'1:00 PM ET',g:'E',h:'Germany',a:'Curaçao',v:'AT&T Stadium',c:'Arlington, TX',tv:['FOX'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:'7-1',st:'ft'},
+  {fdId:null,date:'2026-06-14',kick:'4:00 PM ET',g:'F',h:'Netherlands',a:'Japan',v:'SoFi Stadium',c:'Inglewood, CA',tv:['FOX'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:'2-2',st:'ft'},
+  {fdId:null,date:'2026-06-14',kick:'7:00 PM ET',g:'E',h:"Côte d'Ivoire",a:'Ecuador',v:'NRG Stadium',c:'Houston, TX',tv:['FS1'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:'1-0',st:'ft'},
+  {fdId:null,date:'2026-06-14',kick:'10:00 PM ET',g:'D',h:'Australia',a:'Türkiye',v:'BC Place',c:'Vancouver',tv:['FS1'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:'2-0',st:'ft'},
+  {fdId:null,date:'2026-06-14',kick:'10:00 PM ET',g:'F',h:'Sweden',a:'Tunisia',v:'BC Place',c:'Vancouver',tv:['FS1'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:'5-1',st:'ft'},
+  {fdId:null,date:'2026-06-15',kick:'1:00 PM ET',g:'H',h:'Spain',a:'Cabo Verde',v:'Mercedes-Benz Stadium',c:'Atlanta, GA',tv:['FOX'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:'0-0',st:'ft'},
+  {fdId:null,date:'2026-06-15',kick:'4:00 PM ET',g:'G',h:'Belgium',a:'New Zealand',v:'Hard Rock Stadium',c:'Miami, FL',tv:['FOX'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:'3-1',st:'ft'},
+  {fdId:null,date:'2026-06-15',kick:'6:00 PM ET',g:'G',h:'Egypt',a:'IR Iran',v:'Lumen Field',c:'Seattle, WA',tv:['FS1'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:'1-1',st:'ft'},
+  {fdId:null,date:'2026-06-15',kick:'6:00 PM ET',g:'H',h:'Saudi Arabia',a:'Uruguay',v:'Hard Rock Stadium',c:'Miami, FL',tv:['FOX'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:'1-1',st:'ft'},
   {fdId:null,date:'2026-06-16',kick:'3:00 PM ET',g:'I',h:'France',a:'Senegal',v:'MetLife Stadium',c:'East Rutherford, NJ',tv:['FOX'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
   {fdId:null,date:'2026-06-16',kick:'6:00 PM ET',g:'I',h:'Iraq',a:'Norway',v:'Gillette Stadium',c:'Foxborough, MA',tv:['FS1'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
   {fdId:null,date:'2026-06-16',kick:'9:00 PM ET',g:'J',h:'Argentina',a:'Algeria',v:'Arrowhead Stadium',c:'Kansas City, MO',tv:['FOX'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
@@ -420,8 +421,8 @@ const MATCHES = [
   {fdId:null,date:'2026-06-24',kick:'3:00 PM ET',g:'B',h:'Qatar',a:'Bosnia and Herzegovina',v:'Hard Rock Stadium',c:'Miami, FL',tv:['FS1'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
   {fdId:null,date:'2026-06-24',kick:'6:00 PM ET',g:'A',h:'South Africa',a:'South Korea',v:'NRG Stadium',c:'Houston, TX',tv:['FOX'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
   {fdId:null,date:'2026-06-24',kick:'6:00 PM ET',g:'A',h:'Mexico',a:'Czechia',v:'Estadio BBVA',c:'Monterrey',tv:['FS1'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
-  {fdId:null,date:'2026-06-25',kick:'3:00 PM ET',g:'G',h:'Belgium',a:'Egypt',v:'BC Place',c:'Vancouver',tv:['FOX'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
-  {fdId:null,date:'2026-06-25',kick:'3:00 PM ET',g:'G',h:'IR Iran',a:'New Zealand',v:'Lumen Field',c:'Seattle, WA',tv:['FS1'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
+  {fdId:null,date:'2026-06-25',kick:'3:00 PM ET',g:'G',h:'Belgium',a:'Egypt',v:'BC Place',c:'Vancouver',tv:['FOX'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:'1-1',st:'ft'},
+  {fdId:null,date:'2026-06-25',kick:'3:00 PM ET',g:'G',h:'IR Iran',a:'New Zealand',v:'Lumen Field',c:'Seattle, WA',tv:['FS1'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:'2-2',st:'ft'},
   {fdId:null,date:'2026-06-25',kick:'6:00 PM ET',g:'H',h:'Uruguay',a:'Cabo Verde',v:'SoFi Stadium',c:'Inglewood, CA',tv:['FOX'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
   {fdId:null,date:'2026-06-25',kick:'6:00 PM ET',g:'H',h:'Spain',a:'Uruguay',v:'Hard Rock Stadium',c:'Miami, FL',tv:['FS1'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
   {fdId:null,date:'2026-06-26',kick:'3:00 PM ET',g:'D',h:'United States',a:'Türkiye',v:'SoFi Stadium',c:'Inglewood, CA',tv:['FOX'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
@@ -488,15 +489,22 @@ function fdToSt(s) {
 }
 
 function getLive(m) {
-  return LIVE[liveKey(m.h, m.a)] || {sc: m.sc, st: m.st, min: null};
+  // Check API data first, fall back to hardcoded sc/st
+  return LIVE[liveKey(m.h, m.a)] || { sc: m.sc, st: m.st, min: null };
 }
 
 // ═══════════════════════════════════════════════════════
-// LIVE SCORE FETCH  — football-data.org v4
+// LIVE SCORE FETCH — football-data.org v4
+// Fetches ALL tournament matches (not just today) so every
+// tab — Today, Teams, Groups — always has complete data.
 // ═══════════════════════════════════════════════════════
 let _refreshTimer = null;
+let _fetchInProgress = false;
 
 async function fetchScores(manual = false) {
+  if (_fetchInProgress && !manual) return;
+  _fetchInProgress = true;
+
   const btn  = document.getElementById('lbtn');
   const ico  = document.getElementById('lico');
   const stat = document.getElementById('lstat');
@@ -505,105 +513,124 @@ async function fetchScores(manual = false) {
   btn.disabled = true;
   btn.classList.add('spinning');
 
-  // No token — show setup notice
   if (!API_TOKEN || API_TOKEN === 'YOUR_TOKEN_HERE') {
     stat.textContent = 'Add free API token to enable live scores';
     dot.className = 'ldot err';
     document.getElementById('token-notice').classList.add('show');
     btn.disabled = false;
     btn.classList.remove('spinning');
-    renderToday();
+    _fetchInProgress = false;
+    syncAllViews();
     scheduleNext();
     return;
   }
 
   try {
-    const today = todayET();
-    // Fetch today's WC matches
-    const url = `${API_BASE}/competitions/${WC_CODE}/matches?dateFrom=${today}&dateTo=${today}`;
+    // ── Fetch ALL WC matches (group stage = matchdays 1-4 + live) ──
+    // football-data.org free tier: fetch full competition match list
+    // This gives us every result past, present and scheduled in one call.
+    const url = `${API_BASE}/competitions/${WC_CODE}/matches`;
     const res = await fetch(url, {
       headers: { 'X-Auth-Token': API_TOKEN, 'Accept': 'application/json' }
     });
 
-    if (res.status === 401 || res.status === 403) {
-      throw new Error('Token rejected — check your football-data.org token');
-    }
-    if (res.status === 429) {
-      throw new Error('Rate limit hit — will retry in 5 min');
-    }
-    if (!res.ok) {
-      throw new Error(`API returned ${res.status}`);
-    }
+    if (res.status === 401 || res.status === 403) throw new Error('Token rejected — check football-data.org token');
+    if (res.status === 429) throw new Error('Rate limited — retrying in 5 min');
+    if (!res.ok) throw new Error(`API ${res.status}`);
 
     const json = await res.json();
-    const apiMatches = json.matches || [];
+    const all  = json.matches || [];
 
-    // Clear and rebuild LIVE map
+    // ── Rebuild LIVE map from every match returned ──
     LIVE = {};
-    for (const am of apiMatches) {
+    for (const am of all) {
       const rawH = am.homeTeam?.name || am.homeTeam?.shortName || '';
       const rawA = am.awayTeam?.name || am.awayTeam?.shortName || '';
       const home = normTeam(rawH);
       const away = normTeam(rawA);
       if (!home || !away) continue;
 
-      // Score: use fullTime if available, else halfTime, else in-play score
-      const hs = am.score?.fullTime?.home ?? am.score?.halfTime?.home ?? null;
-      const as_ = am.score?.fullTime?.away ?? am.score?.halfTime?.away ?? null;
-      const sc = (hs !== null && as_ !== null) ? `${hs}-${as_}` : null;
-
       const st = fdToSt(am.status);
+
+      // Score priority: fullTime → currentScore (in-play) → halfTime → null
+      let hs = null, as_ = null;
+      if (am.score?.fullTime?.home != null) {
+        hs  = am.score.fullTime.home;
+        as_ = am.score.fullTime.away;
+      } else if (am.score?.regularTime?.home != null) {
+        hs  = am.score.regularTime.home;
+        as_ = am.score.regularTime.away;
+      } else if (am.score?.halfTime?.home != null && st !== 'sched') {
+        hs  = am.score.halfTime.home;
+        as_ = am.score.halfTime.away;
+      }
+
+      const sc  = (hs !== null && as_ !== null) ? `${hs}-${as_}` : null;
       const min = am.minute ?? null;
 
+      // Store by home|away key AND away|home so look-ups always hit
       LIVE[liveKey(home, away)] = { sc, st, min };
-      // Also store reverse key in case our data has them swapped
-      LIVE[liveKey(away, home)] = { sc: sc ? sc.split('-').reverse().join('-') : null, st, min };
+      LIVE[liveKey(away, home)] = {
+        sc: sc ? sc.split('-').reverse().join('-') : null,
+        st, min
+      };
     }
 
-    // Count statuses
-    const liveCount = Object.values(LIVE).filter(x => x.st === 'live').length / 2; // halved due to reverse keys
-    const ftCount   = Object.values(LIVE).filter(x => x.st === 'ft').length / 2;
-    const totalToday = apiMatches.length;
+    // ── Status summary ──
+    const unique    = all.length;
+    const liveNow   = all.filter(m => fdToSt(m.status) === 'live').length;
+    const htNow     = all.filter(m => fdToSt(m.status) === 'ht').length;
+    const completed = all.filter(m => fdToSt(m.status) === 'ft').length;
+    const todayStr_ = todayET();
+    const todayGames = all.filter(m => (m.utcDate||'').startsWith(todayStr_) ||
+      MATCHES.find(lm => lm.h === normTeam(m.homeTeam?.name||'') && lm.date === todayStr_));
 
-    // Update indicator
-    if (liveCount > 0) {
-      dot.className = 'ldot live';
-      stat.textContent = `${Math.round(liveCount)} match${liveCount > 1 ? 'es' : ''} LIVE · ${fmtUpdated()} ET`;
-    } else if (ftCount > 0) {
-      dot.className = 'ldot';
-      stat.textContent = `${Math.round(ftCount)} result${ftCount > 1 ? 's' : ''} final · Updated ${fmtUpdated()} ET`;
-    } else if (totalToday > 0) {
-      dot.className = 'ldot';
-      stat.textContent = `${totalToday} match${totalToday > 1 ? 'es' : ''} today · Updated ${fmtUpdated()} ET`;
+    // ── Update live indicator ──
+    dot.className = liveNow > 0 ? 'ldot live' : 'ldot';
+    if (liveNow > 0 || htNow > 0) {
+      const playing = liveNow + htNow;
+      stat.textContent = `🔴 ${playing} match${playing > 1 ? 'es' : ''} in progress · ${fmtUpdated()} ET`;
+    } else if (completed > 0) {
+      stat.textContent = `${completed} result${completed > 1 ? 's' : ''} recorded · Updated ${fmtUpdated()} ET`;
     } else {
-      dot.className = 'ldot';
-      stat.textContent = `No matches today · Updated ${fmtUpdated()} ET`;
+      stat.textContent = `Live data ready · Updated ${fmtUpdated()} ET`;
     }
 
-    // Re-render affected views
-    renderToday();
-    if (currentView === 'search' && currentTeam) showTeam(currentTeam, false);
-    if (currentView === 'groups' && selGroup) renderGroupBody(selGroup);
+    // ── Sync every view with fresh data ──
+    syncAllViews();
 
   } catch(err) {
     dot.className = 'ldot err';
-    stat.textContent = err.message || 'Could not load scores';
-    console.error('[WC2026] fetchScores:', err);
-    renderToday();
+    stat.textContent = `⚠ ${err.message}`;
+    console.error('[WC2026]', err);
+    syncAllViews(); // still re-render with whatever we have
   }
 
   btn.disabled = false;
   btn.classList.remove('spinning');
+  _fetchInProgress = false;
   scheduleNext();
+}
+
+// ── Re-render every open view with latest LIVE data ──
+function syncAllViews() {
+  renderToday();
+  // Always re-render groups so scores show immediately when tab opened
+  renderGroups();
+  // If user is looking at a team schedule, refresh it too
+  if (currentView === 'search' && currentTeam) showTeam(currentTeam, false);
 }
 
 function scheduleNext() {
   clearTimeout(_refreshTimer);
-  // If any match is live → refresh every 45 sec
-  // Otherwise → every 5 min
-  const hasLive = Object.values(LIVE).some(x => x.st === 'live');
-  const delay = hasLive ? 45_000 : 5 * 60_000;
-  _refreshTimer = setTimeout(() => fetchScores(false), delay);
+  // Live match in progress → poll every 45s
+  // Games scheduled today → poll every 3min
+  // Nothing today → poll every 10min
+  const hasLive  = Object.values(LIVE).some(x => x.st === 'live' || x.st === 'ht');
+  const todayKey = todayET();
+  const hasToday = MATCHES.some(m => m.date === todayKey);
+  const delay    = hasLive ? 45_000 : hasToday ? 3 * 60_000 : 10 * 60_000;
+  _refreshTimer  = setTimeout(() => fetchScores(false), delay);
 }
 
 // ═══════════════════════════════════════════════════════
@@ -902,6 +929,11 @@ function go(name) {
   document.querySelectorAll('.view').forEach(v => v.classList.remove('on'));
   document.getElementById('v-' + name).classList.add('on');
   document.getElementById('sticky-s').style.display = name === 'search' ? 'block' : 'none';
+
+  // Sync the tab being opened with latest live data
+  if (name === 'today') renderToday();
+  if (name === 'groups') renderGroups();
+  if (name === 'search' && currentTeam) showTeam(currentTeam, false);
 }
 
 // ═══════════════════════════════════════════════════════
