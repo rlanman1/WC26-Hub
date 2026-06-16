@@ -862,20 +862,23 @@ function renderToday() {
     d.toLocaleDateString('en-US', {weekday:'long', month:'long', day:'numeric', year:'numeric'});
 
   // Today's full slate:
-  // - Core: all matches dated today in ET
-  // - After 10 PM: also include 12:00 AM matches dated tomorrow (late-night games)
-  // - Before 2 AM: also include 12:00 AM matches dated yesterday (just finished)
+  // 12:00 AM ET games are stored on the NEXT calendar date but belong to the
+  // previous evening's schedule. We always pull them in with the day before.
+  // e.g. Austria vs Jordan kicks off midnight Jun 17 ET → shown on Jun 16 slate.
+  // The date on the match card stays correct (shows actual date). Only the
+  // grouping changes so users see the full evening's slate together.
   const tomorrowET = (() => {
     const tmp = nowET(); tmp.setDate(tmp.getDate() + 1);
     return `${tmp.getFullYear()}-${String(tmp.getMonth()+1).padStart(2,'0')}-${String(tmp.getDate()).padStart(2,'0')}`;
   })();
-  const lateNight   = hourET >= 22
-    ? MATCHES.filter(m => m.date === tomorrowET && m.kick.startsWith('12:00 AM'))
+  // Always include midnight games dated tomorrow — they belong to tonight's slate
+  const midnightGames = MATCHES.filter(m => m.date === tomorrowET && m.kick.startsWith('12:00 AM'));
+  // Before 2 AM: also keep showing last night's midnight games (just finished/finishing)
+  const lastNightMidnight = hourET < 2
+    ? MATCHES.filter(m => m.date === today && m.kick.startsWith('12:00 AM'))
     : [];
-  const earlyMorning = hourET < 2
-    ? MATCHES.filter(m => m.date === yesterday && m.kick.startsWith('12:00 AM'))
-    : [];
-  const todayMs = [...earlyMorning, ...MATCHES.filter(m => m.date === today), ...lateNight];
+  const coreToday = MATCHES.filter(m => m.date === today && !m.kick.startsWith('12:00 AM'));
+  const todayMs = [...lastNightMidnight, ...coreToday, ...midnightGames];
 
   if (!todayMs.length) {
     // Find next match day
