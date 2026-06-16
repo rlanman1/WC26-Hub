@@ -62,17 +62,7 @@ body{font-family:var(--font);background:var(--bg2);min-height:100vh;color:var(--
 .lbtn.spinning i{animation:spin .7s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 
-/* ── TOKEN NOTICE ── */
-.token-notice{display:none;background:#1a3a28;border:0.5px solid rgba(110,231,183,.25);
-  border-radius:var(--rl);padding:12px 14px;margin-bottom:12px;gap:10px}
-.token-notice.show{display:flex}
-.tn-icon{font-size:20px;flex-shrink:0;margin-top:1px}
-.tn-body{flex:1;font-size:12px;color:rgba(255,255,255,.8);line-height:1.6}
-.tn-body strong{color:#6ee7b7;display:block;margin-bottom:3px}
-.tn-body a{color:#6ee7b7}
-.tn-body code{background:rgba(255,255,255,.12);padding:1px 5px;border-radius:3px;font-size:11px}
-.tn-close{background:none;border:none;color:rgba(255,255,255,.35);font-size:20px;
-  cursor:pointer;padding:0;line-height:1;align-self:flex-start;flex-shrink:0}
+
 
 /* ── TABS ── */
 .tabs{display:flex;margin-bottom:12px;border:0.5px solid var(--bd2);border-radius:var(--r);
@@ -130,10 +120,9 @@ body{font-family:var(--font);background:var(--bg2);min-height:100vh;color:var(--
 .mc-venue i{font-size:13px;color:var(--tx3);flex-shrink:0}
 .mc-watch{display:flex;align-items:center;gap:5px;flex-wrap:wrap}
 .wl{font-size:10px;color:var(--tx3)}
-.chip{font-size:10px;font-weight:500;padding:2px 7px;border-radius:4px}
-.ce{background:#dcfce7;color:#15803d;border:0.5px solid #86efac}
-.cs{background:#fff7ed;color:#9a3412;border:0.5px solid #fed7aa}
-.cst{background:#eff6ff;color:#1d4ed8;border:0.5px solid #bfdbfe}
+.chip{font-size:10px;font-weight:400;padding:2px 7px;border-radius:4px;
+  background:var(--bg2);color:var(--tx3);border:0.5px solid var(--bd)}
+.ce,.cs,.cst{background:var(--bg2);color:var(--tx3);border:0.5px solid var(--bd)}
 
 /* ── EMPTY ── */
 .empty{text-align:center;padding:40px 16px;color:var(--tx2);font-size:13px}
@@ -235,17 +224,7 @@ body{font-family:var(--font);background:var(--bg2);min-height:100vh;color:var(--
 <body>
 <div class="app">
 
-  <!-- TOKEN NOTICE -->
-  <div class="token-notice" id="token-notice">
-    <span class="tn-icon">⚡</span>
-    <div class="tn-body">
-      <strong>Activate live scores — free, 2 minutes</strong>
-      1. Register at <a href="https://www.football-data.org/client/register" target="_blank">football-data.org</a> (just email + password)<br>
-      2. They email you a token instantly<br>
-      3. Open <code>index.html</code> → find <code>YOUR_TOKEN_HERE</code> → paste token → re-upload to GitHub
-    </div>
-    <button class="tn-close" onclick="document.getElementById('token-notice').classList.remove('show')">✕</button>
-  </div>
+
 
   <!-- HERO -->
   <div class="hero">
@@ -392,7 +371,7 @@ const MATCHES = [
   {date:'2026-06-12',kick:'9:00 PM ET',g:'D',h:'United States',a:'Paraguay',v:'SoFi Stadium',c:'Inglewood, CA',tv:['FOX','Tubi'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:'4-1',st:'ft'},
   {date:'2026-06-14',kick:'10:00 PM ET',g:'D',h:'Australia',a:'Türkiye',v:'BC Place',c:'Vancouver',tv:['FS1'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:'2-0',st:'ft'},
   {date:'2026-06-19',kick:'3:00 PM ET',g:'D',h:'United States',a:'Australia',v:'Lumen Field',c:'Seattle, WA',tv:['FOX'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
-  {date:'2026-06-19',kick:'12:00 AM ET',g:'D',h:'Türkiye',a:'Paraguay',v:"Levi's Stadium",c:'Santa Clara, CA',tv:['FS1'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
+  {date:'2026-06-20',kick:'12:00 AM ET',g:'D',h:'Türkiye',a:'Paraguay',v:"Levi's Stadium",c:'Santa Clara, CA',tv:['FS1'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
   {date:'2026-06-25',kick:'10:00 PM ET',g:'D',h:'United States',a:'Türkiye',v:'SoFi Stadium',c:'Inglewood, CA',tv:['FOX'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
   {date:'2026-06-25',kick:'10:00 PM ET',g:'D',h:'Paraguay',a:'Australia',v:'Mercedes-Benz Stadium',c:'Atlanta, GA',tv:['FS1'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
 
@@ -408,7 +387,7 @@ const MATCHES = [
   {date:'2026-06-14',kick:'4:00 PM ET',g:'F',h:'Netherlands',a:'Japan',v:'SoFi Stadium',c:'Inglewood, CA',tv:['FOX'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:'2-2',st:'ft'},
   {date:'2026-06-14',kick:'10:00 PM ET',g:'F',h:'Sweden',a:'Tunisia',v:'Estadio BBVA',c:'Monterrey',tv:['FS1'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:'5-1',st:'ft'},
   {date:'2026-06-20',kick:'1:00 PM ET',g:'F',h:'Netherlands',a:'Sweden',v:'NRG Stadium',c:'Houston, TX',tv:['FOX'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
-  {date:'2026-06-20',kick:'12:00 AM ET',g:'F',h:'Tunisia',a:'Japan',v:'Estadio BBVA',c:'Monterrey',tv:['FS1'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
+  {date:'2026-06-21',kick:'12:00 AM ET',g:'F',h:'Tunisia',a:'Japan',v:'Estadio BBVA',c:'Monterrey',tv:['FS1'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
   {date:'2026-06-25',kick:'7:00 PM ET',g:'F',h:'Japan',a:'Sweden',v:'AT&T Stadium',c:'Arlington, TX',tv:['FS1'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
   {date:'2026-06-25',kick:'7:00 PM ET',g:'F',h:'Tunisia',a:'Netherlands',v:'Arrowhead Stadium',c:'Kansas City, MO',tv:['FOX'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
 
@@ -438,7 +417,7 @@ const MATCHES = [
 
   // ── GROUP J ──
   {date:'2026-06-16',kick:'9:00 PM ET',g:'J',h:'Argentina',a:'Algeria',v:'Arrowhead Stadium',c:'Kansas City, MO',tv:['FOX'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
-  {date:'2026-06-16',kick:'12:00 AM ET',g:'J',h:'Austria',a:'Jordan',v:"Levi's Stadium",c:'Santa Clara, CA',tv:['FS1'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
+  {date:'2026-06-17',kick:'12:00 AM ET',g:'J',h:'Austria',a:'Jordan',v:"Levi's Stadium",c:'Santa Clara, CA',tv:['FS1'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
   {date:'2026-06-22',kick:'1:00 PM ET',g:'J',h:'Argentina',a:'Austria',v:'AT&T Stadium',c:'Arlington, TX',tv:['FOX'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
   {date:'2026-06-22',kick:'11:00 PM ET',g:'J',h:'Jordan',a:'Algeria',v:"Levi's Stadium",c:'Santa Clara, CA',tv:['FS1'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
   {date:'2026-06-27',kick:'10:00 PM ET',g:'J',h:'Algeria',a:'Austria',v:'Arrowhead Stadium',c:'Kansas City, MO',tv:['FS1'],tvs:['Telemundo'],str:['FOX One','Peacock'],sc:null,st:'sched'},
@@ -534,7 +513,7 @@ async function fetchScores(manual = false) {
   if (!API_TOKEN || API_TOKEN === 'YOUR_TOKEN_HERE') {
     stat.textContent = 'Add free API token to enable live scores';
     dot.className = 'ldot err';
-    document.getElementById('token-notice').classList.add('show');
+
     btn.disabled = false;
     btn.classList.remove('spinning');
     _fetchInProgress = false;
@@ -825,12 +804,17 @@ function renderToday() {
   document.getElementById('hero-date').textContent =
     d.toLocaleDateString('en-US', {weekday:'long', month:'long', day:'numeric', year:'numeric'});
 
-  // Include today's matches. If it's before 2 AM ET, also show yesterday's 
-  // late matches (midnight kickoffs that started the previous evening)
+  // Today's full slate = today's matches + any 12:00 AM matches dated tomorrow
+  // (midnight ET games belong to the previous evening's schedule but land on the next date)
+  const tomorrowET = (() => {
+    const d = nowET(); d.setDate(d.getDate() + 1);
+    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  })();
+  const midnightNext = MATCHES.filter(m => m.date === tomorrowET && m.kick.startsWith('12:00 AM'));
   const lateYesterday = hourET < 2
     ? MATCHES.filter(m => m.date === yesterday && m.kick.startsWith('12:00 AM'))
     : [];
-  const todayMs = [...lateYesterday, ...MATCHES.filter(m => m.date === today)];
+  const todayMs = [...lateYesterday, ...MATCHES.filter(m => m.date === today), ...midnightNext];
 
   if (!todayMs.length) {
     // Find next match day
