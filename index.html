@@ -85,7 +85,7 @@ button,input,[onclick]{touch-action:manipulation}
 .mc{background:var(--bg);border:1px solid var(--bd);border-radius:var(--rl);
   padding:12px 14px 10px;margin-bottom:9px;transition:border-color .2s}
 .mc.usmnt{border-color:#2d7a4f;border-width:1px}
-.mc.is-live{border-color:#dc2626;border-width:1px}
+.mc.is-live{border-color:#2d7a4f;border-width:1px}
 
 .mc-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
 .mc-grp{font-size:10px;color:var(--tx3);text-transform:uppercase;letter-spacing:.5px}
@@ -93,7 +93,7 @@ button,input,[onclick]{touch-action:manipulation}
 /* status badge */
 .bdg{font-size:10px;font-weight:600;padding:2px 9px;border-radius:20px;letter-spacing:.2px}
 .bdg-sched{background:var(--bg2);color:var(--tx2)}
-.bdg-live{background:#fef2f2;color:#dc2626;animation:blink 1.4s infinite}
+.bdg-live{background:#f0fdf4;color:#15803d}
 .bdg-ht{background:#fff7ed;color:#c2410c}
 .bdg-ft{background:#f0fdf4;color:#15803d}
 
@@ -111,7 +111,7 @@ button,input,[onclick]{touch-action:manipulation}
 .mc-score{font-size:26px;font-weight:600;color:var(--tx);letter-spacing:2px;line-height:1}
 .mc-time-txt{font-size:13px;font-weight:600;color:var(--tx);margin-bottom:1px}
 .mc-vs{font-size:10px;color:var(--tx3)}
-.mc-min{font-size:10px;color:#dc2626;font-weight:600;margin-top:2px}
+
 
 /* footer */
 .mc-foot{margin-top:10px;padding-top:8px;border-top:1px solid var(--bd);
@@ -549,8 +549,44 @@ function fdToSt(s) {
 }
 
 function getLive(m) {
-  // Check API data first, fall back to hardcoded sc/st
-  return LIVE[liveKey(m.h, m.a)] || { sc: m.sc, st: m.st, min: null };
+  // API data takes priority
+  const api = LIVE[liveKey(m.h, m.a)];
+  if (api) return api;
+
+  // Time-based fallback: if kickoff has passed but API hasn't updated yet,
+  // show LIVE automatically. A match is ~105 mins so we use 115min window.
+  if (m.st === 'sched') {
+    try {
+      const now = nowET();
+      const today = todayET();
+      // Only apply to today's matches
+      if (m.date === today || m.date === (() => {
+        const t = nowET(); t.setDate(t.getDate()+1);
+        return `${t.getFullYear()}-${String(t.getMonth()+1).padStart(2,'0')}-${String(t.getDate()).padStart(2,'0')}`;
+      })()) {
+        // Parse kick time e.g. "3:00 PM ET" or "12:00 AM ET"
+        const kickStr = m.kick.replace(' ET','').trim();
+        const kickDate = new Date(`${m.date}T00:00:00`);
+        const [time, period] = kickStr.split(' ');
+        let [hours, mins] = time.split(':').map(Number);
+        if (period === 'PM' && hours !== 12) hours += 12;
+        if (period === 'AM' && hours === 12) hours = 0;
+        // Convert to ET by building a comparable ET time
+        const kickET = new Date(now);
+        kickET.setHours(hours, mins, 0, 0);
+        const diffMins = (now - kickET) / 60000;
+        if (diffMins > 0 && diffMins < 115) {
+          return { sc: null, st: 'live', min: null, inj: null };
+        }
+        if (diffMins >= 115) {
+          // Match likely over but API hasn't confirmed — keep sched until API updates
+          return { sc: m.sc, st: m.st, min: null, inj: null };
+        }
+      }
+    } catch(e) {}
+  }
+
+  return { sc: m.sc, st: m.st, min: null, inj: null };
 }
 
 // ═══════════════════════════════════════════════════════
@@ -627,12 +663,13 @@ async function fetchScores(manual = false) {
 
       const sc  = (hs !== null && as_ !== null) ? `${hs}-${as_}` : null;
       const min = am.minute ?? null;
+      const inj = am.injuryTime ?? null; // added time minutes
 
       // Store by home|away key AND away|home so look-ups always hit
-      LIVE[liveKey(home, away)] = { sc, st, min };
+      LIVE[liveKey(home, away)] = { sc, st, min, inj };
       LIVE[liveKey(away, home)] = {
         sc: sc ? sc.split('-').reverse().join('-') : null,
-        st, min
+        st, min, inj
       };
     }
 
@@ -707,18 +744,17 @@ function matchCard(m, tapTeams) {
   const sc = lv.sc || m.sc;
   const isUSA = m.h === 'United States' || m.a === 'United States';
 
-  // Badge
+  // Badge — minute always shown for live matches, added time handled
   let bdgCls, bdgTxt;
-  if (st === 'live') { bdgCls = 'bdg-live'; bdgTxt = lv.min ? `${lv.min}′ LIVE` : 'LIVE'; }
+  if (st === 'live') { bdgCls = 'bdg-live'; bdgTxt = 'LIVE'; }
   else if (st === 'ht') { bdgCls = 'bdg-ht'; bdgTxt = 'Half Time'; }
   else if (st === 'ft') { bdgCls = 'bdg-ft'; bdgTxt = 'Full Time'; }
   else { bdgCls = 'bdg-sched'; bdgTxt = m.kick; }
 
-  // Center block
+  // Center block — score only, no duplicate minute under score
   let midHTML;
   if ((st === 'ft' || st === 'ht' || st === 'live') && sc) {
     midHTML = `<span class="mc-score">${sc}</span>`;
-    if (st === 'live' && lv.min) midHTML += `<span class="mc-min">${lv.min}′</span>`;
   } else {
     midHTML = `<span class="mc-vs">vs</span>`;
   }
